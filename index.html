@@ -124,6 +124,13 @@ select {
   cursor: pointer;
   outline: none;
   max-width: 118px;
+  box-sizing: border-box;
+}
+
+#save-format {
+  max-width: none;
+  width: 100%;
+  margin-bottom: 6px;
 }
 
 select option { background: #05050d; }
@@ -190,6 +197,18 @@ button:hover, .file-btn:hover { background: #4af; color: #05050d; }
 
 .swatch:hover { transform: scale(1.06); border-color: #4af; }
 
+.preset-row { display: flex; gap: 5px; flex-wrap: wrap; }
+
+.preset-btn {
+  width: 26px !important; height: 18px !important;
+  padding: 0 !important; border: 1px solid #1a1a35 !important;
+  cursor: pointer; transition: transform 0.12s !important;
+  letter-spacing: 0 !important;
+}
+
+.preset-btn:hover { transform: scale(1.1); border-color: #4af !important; background: inherit !important; }
+
+
 input[type="color"] {
   position: absolute; width: 0; height: 0;
   opacity: 0; pointer-events: none;
@@ -220,11 +239,16 @@ input[type="color"] {
   font-size: 9px; opacity: 0.4;
 }
 
-#export-btn { border-color: #af4; color: #af4; }
-#export-btn:hover { background: #af4; color: #05050d; }
-
-#gif-btn { border-color: #f4a; color: #f4a; }
-#gif-btn:hover { background: #f4a; color: #05050d; }
+#save-btn {
+  width: 100%;
+  background: #af4;
+  color: #05050d;
+  border-color: #af4;
+  font-weight: 700;
+  letter-spacing: 2px;
+  font-size: 10px;
+}
+#save-btn:hover { background: #cff77a; border-color: #cff77a; color: #05050d; }
 
 /* ── Main ── */
 .main {
@@ -262,6 +286,14 @@ input[type="color"] {
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
+  transition: outline 0.1s;
+  position: relative;
+}
+
+.ascii-scroll.drag-over {
+  outline: 2px dashed #4af;
+  outline-offset: -6px;
+  background: rgba(68,170,255,0.04);
 }
 
 .ascii-wrapper {
@@ -271,9 +303,8 @@ input[type="color"] {
 }
 
 #ascii-canvas {
-  display: block; line-height: 1;
-  white-space: pre; font-size: 8px;
-  letter-spacing: 1px;
+  display: block;
+  image-rendering: pixelated;
 }
 
 .hint {
@@ -342,6 +373,14 @@ input[type="color"] {
   display: flex; flex-direction: column; gap: 8px;
 }
 
+.gif-preview {
+  width: 100%; height: auto;
+  display: block; border: 1px solid #1c1c2e;
+  image-rendering: pixelated;
+  background: #000;
+  max-height: 140px;
+}
+
 .gif-mode h3 {
   font-size: 8px; letter-spacing: 3px;
   text-transform: uppercase; color: #f4a;
@@ -391,6 +430,20 @@ input[type="color"] {
 }
 
 #hidden-canvas, #export-canvas { display: none; }
+
+.render-overlay {
+  display: none; position: absolute; inset: 0;
+  background: rgba(5,5,13,0.7); z-index: 10;
+  align-items: center; justify-content: center;
+  backdrop-filter: blur(2px);
+}
+.render-overlay.visible { display: flex; }
+.render-overlay span {
+  font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+  color: #4af; opacity: 0.7;
+  animation: blink 0.8s step-end infinite;
+}
+@keyframes blink { 50% { opacity: 0.2; } }
 </style>
 </head>
 <body>
@@ -406,6 +459,12 @@ input[type="color"] {
     <div class="sec-title">Source</div>
     <label class="file-btn" for="img-upload">Upload Image</label>
     <input type="file" id="img-upload" accept="image/*">
+    <div style="display:flex;gap:4px">
+      <input type="text" id="url-input" placeholder="https://…" maxlength="512"
+        style="flex:1;min-width:0;background:transparent;border:1px solid #1a1a35;color:#4af;
+               font-family:monospace;font-size:9px;padding:5px 6px;outline:none;letter-spacing:0;">
+      <button id="url-btn" style="width:auto;padding:5px 8px;flex-shrink:0">Go</button>
+    </div>
     <div class="row">
       <label>Columns</label>
       <div class="rr">
@@ -413,7 +472,62 @@ input[type="color"] {
         <span class="val" id="cols-val">100</span>
       </div>
     </div>
+    <div class="row">
+      <label>Aspect</label>
+      <div class="rr">
+        <input type="range" id="aspect-range" min="30" max="70" value="45" step="1">
+        <span class="val" id="aspect-val">0.45</span>
+      </div>
+    </div>
+    <div class="row">
+      <label>Bright</label>
+      <div class="rr">
+        <input type="range" id="brightness-range" min="-100" max="100" value="0" step="5">
+        <span class="val" id="brightness-val">0</span>
+      </div>
+    </div>
+    <div class="row">
+      <label>Contrast</label>
+      <div class="rr">
+        <input type="range" id="contrast-range" min="-100" max="100" value="0" step="5">
+        <span class="val" id="contrast-val">0</span>
+      </div>
+    </div>
     <button id="render-btn">Render</button>
+    <div style="display:flex;gap:4px">
+      <button id="webcam-btn" style="flex:1">Webcam</button>
+      <button id="webcam-snap-btn" style="flex:1;display:none;border-color:#af4;color:#af4">Snap</button>
+    </div>
+  </div>
+
+  <!-- HOVER -->
+  <div class="section">
+    <div class="sec-title">Hover</div>
+    <div class="btn-group" id="hover-mode-group">
+      <button class="active" data-hmode="scramble">Scramble</button>
+      <button data-hmode="reveal">Reveal</button>
+      <button data-hmode="off">Off</button>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <label>Radius</label>
+      <div class="rr">
+        <input type="range" id="radius-range" min="1" max="20" value="6">
+        <span class="val" id="radius-val">6</span>
+      </div>
+    </div>
+    <div id="reveal-extra" style="display:none;margin-top:6px">
+      <div class="row">
+        <label>Auto s</label>
+        <div class="rr">
+          <input type="range" id="auto-reveal-dur" min="2" max="10" value="4">
+          <span class="val" id="auto-reveal-val">4</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:5px;margin-top:6px">
+        <button id="auto-reveal-btn" style="flex:1">Auto</button>
+        <button id="reset-reveal-btn">Reset</button>
+      </div>
+    </div>
   </div>
 
   <!-- APPEARANCE -->
@@ -422,13 +536,19 @@ input[type="color"] {
     <div class="row">
       <label>Chars</label>
       <select id="charset-sel">
+        <option value="minimal">Minimal</option>
+        <option value="matrix">Matrix</option>
         <option value="detailed">Detailed</option>
         <option value="dots">Dots</option>
         <option value="blocks">Blocks</option>
-        <option value="minimal">Minimal</option>
         <option value="numbers">Numbers</option>
-        <option value="matrix">Matrix</option>
+        <option value="custom">Custom…</option>
       </select>
+    </div>
+    <div id="custom-charset-group" style="display:none">
+      <input type="text" id="custom-charset-input" placeholder=" .:-=+*#%@" maxlength="80"
+        style="width:100%;background:transparent;border:1px solid #1a1a35;color:#4af;
+               font-family:monospace;font-size:9px;padding:5px 6px;outline:none;letter-spacing:1px;">
     </div>
     <div>
       <div class="sec-title" style="margin-bottom:5px">Mode</div>
@@ -436,6 +556,18 @@ input[type="color"] {
         <button class="active" data-mode="mono">Mono</button>
         <button data-mode="color">Color</button>
         <button data-mode="bw">B&amp;W</button>
+        <button data-mode="duotone">Duo</button>
+        <button data-mode="edge">Edge</button>
+      </div>
+    </div>
+    <div id="duotone-accent-group" style="display:none">
+      <div class="sec-title" style="margin-bottom:5px">Accent</div>
+      <div class="swatch-pair">
+        <div class="swatch-item">
+          <div class="swatch" id="dt-swatch"></div>
+          <input type="color" id="dt-color-input" value="#ff4400">
+          <span>Mid</span>
+        </div>
       </div>
     </div>
     <div class="swatch-pair">
@@ -450,6 +582,17 @@ input[type="color"] {
         <span>BG</span>
       </div>
     </div>
+    <div>
+      <div class="sec-title" style="margin-bottom:5px">Presets</div>
+      <div class="preset-row">
+        <button class="preset-btn" data-fg="44aaff" data-bg="080810" title="Blue"></button>
+        <button class="preset-btn" data-fg="33ff66" data-bg="001a00" title="Terminal"></button>
+        <button class="preset-btn" data-fg="ffaa33" data-bg="110800" title="Amber"></button>
+        <button class="preset-btn" data-fg="ffffff" data-bg="000000" title="White"></button>
+        <button class="preset-btn" data-fg="000000" data-bg="ffffff" title="Invert"></button>
+        <button class="preset-btn" data-fg="ff4488" data-bg="0d0010" title="Pink"></button>
+      </div>
+    </div>
     <div class="row" id="bw-threshold-group" style="opacity:0.3">
       <label>Threshold</label>
       <div class="rr">
@@ -457,18 +600,12 @@ input[type="color"] {
         <span class="val" id="bw-threshold-val">128</span>
       </div>
     </div>
-  </div>
-
-  <!-- HOVER -->
-  <div class="section">
-    <div class="sec-title">Hover</div>
-    <div class="row">
-      <label>Radius</label>
-      <div class="rr">
-        <input type="range" id="radius-range" min="1" max="20" value="6">
-        <span class="val" id="radius-val">6</span>
-      </div>
-    </div>
+    <label class="check-row" id="dither-group" style="opacity:0.3">
+      <input type="checkbox" id="dither-cb"> Dither
+    </label>
+    <label class="check-row">
+      <input type="checkbox" id="invert-cb"> Invert
+    </label>
   </div>
 
   <!-- VIEW -->
@@ -476,8 +613,25 @@ input[type="color"] {
     <div class="sec-title">View</div>
     <div class="zoom-row">
       <button id="zoom-out">−</button>
-      <span class="zoom-val" id="zoom-val">100%</span>
+      <span class="zoom-val" id="zoom-val" title="Double-click to reset" style="cursor:pointer">100%</span>
       <button id="zoom-in">+</button>
+    </div>
+    <div class="row">
+      <label>Font px</label>
+      <div class="rr">
+        <input type="range" id="fontsize-range" min="6" max="20" value="8" step="1">
+        <span class="val" id="fontsize-val">8</span>
+      </div>
+    </div>
+    <div class="row">
+      <label>Font</label>
+      <select id="font-sel">
+        <option value='"Courier New",monospace'>Courier New</option>
+        <option value="Consolas,monospace">Consolas</option>
+        <option value='"Lucida Console",monospace'>Lucida</option>
+        <option value='"Menlo",monospace'>Menlo</option>
+        <option value='"Monaco",monospace'>Monaco</option>
+      </select>
     </div>
   </div>
 
@@ -495,8 +649,15 @@ input[type="color"] {
     <label class="check-row">
       <input type="checkbox" id="transparent-bg"> Transparent BG
     </label>
-    <button id="export-btn">Save PNG</button>
-    <button id="gif-btn">Save GIF</button>
+    <select id="save-format">
+      <option value="png">PNG image</option>
+      <option value="svg">SVG vector</option>
+      <option value="html">HTML file</option>
+      <option value="txt">Text file</option>
+      <option value="copy">Copy text</option>
+      <option value="gif">Animated GIF</option>
+    </select>
+    <button id="save-btn">Save</button>
   </div>
 </aside>
 
@@ -508,11 +669,12 @@ input[type="color"] {
     <h1>ASCII Art</h1>
   </div>
   <div class="ascii-scroll" id="scroll-area">
+    <div class="render-overlay" id="render-overlay"><span>Rendering…</span></div>
     <div class="ascii-wrapper" id="wrapper">
-      <pre id="ascii-canvas"></pre>
+      <canvas id="ascii-canvas"></canvas>
     </div>
   </div>
-  <p class="hint">Hover to scramble · Ctrl+scroll to zoom</p>
+  <p class="hint">Hover to scramble · Ctrl+scroll to zoom · R render · +/- zoom · 0 reset · Ctrl+S save</p>
 </main>
 
 <!-- GIF Modal -->
@@ -522,6 +684,7 @@ input[type="color"] {
     <div class="gif-modes">
       <div class="gif-mode">
         <h3>Threshold Sweep</h3>
+        <canvas class="gif-preview" id="th-preview"></canvas>
         <p>B&amp;W threshold 255→0. Any mode.</p>
         <div class="row">
           <label>Frames</label>
@@ -544,6 +707,7 @@ input[type="color"] {
       </div>
       <div class="gif-mode">
         <h3>Scramble</h3>
+        <canvas class="gif-preview" id="sc-preview"></canvas>
         <p>5s random hover animation.</p>
         <div class="row">
           <label>FPS</label>
@@ -560,6 +724,120 @@ input[type="color"] {
           </div>
         </div>
         <button class="gif-gen-btn" id="gif-scramble-btn">Generate</button>
+      </div>
+      <div class="gif-mode">
+        <h3>Typewriter</h3>
+        <canvas class="gif-preview" id="fade-preview"></canvas>
+        <p>Characters typed one by one with cursor &amp; random pauses.</p>
+        <div class="row">
+          <label>Frames</label>
+          <div class="rr">
+            <input type="range" id="fade-frames" min="20" max="120" value="50" step="5">
+            <span class="val" id="fade-frames-val">50</span>
+          </div>
+        </div>
+        <div class="row">
+          <label>Delay ms</label>
+          <div class="rr">
+            <input type="range" id="fade-delay" min="20" max="120" value="40" step="5">
+            <span class="val" id="fade-delay-val">40</span>
+          </div>
+        </div>
+        <button class="gif-gen-btn" id="gif-fade-btn">Generate</button>
+      </div>
+      <div class="gif-mode">
+        <h3>Color Cycle</h3>
+        <canvas class="gif-preview" id="cycle-preview"></canvas>
+        <p>Cycles hue through 360°.</p>
+        <div class="row">
+          <label>Frames</label>
+          <div class="rr">
+            <input type="range" id="cycle-frames" min="12" max="64" value="32" step="4">
+            <span class="val" id="cycle-frames-val">32</span>
+          </div>
+        </div>
+        <div class="row">
+          <label>Delay ms</label>
+          <div class="rr">
+            <input type="range" id="cycle-delay" min="30" max="150" value="60" step="10">
+            <span class="val" id="cycle-delay-val">60</span>
+          </div>
+        </div>
+        <div class="row">
+          <label>Sat %</label>
+          <div class="rr">
+            <input type="range" id="cycle-sat" min="40" max="100" value="80" step="5">
+            <span class="val" id="cycle-sat-val">80</span>
+          </div>
+        </div>
+        <button class="gif-gen-btn" id="gif-cycle-btn">Generate</button>
+      </div>
+      <div class="gif-mode">
+        <h3>Wave</h3>
+        <canvas class="gif-preview" id="wave-preview"></canvas>
+        <p>Sine wave ripple animation.</p>
+        <div class="row">
+          <label>Frames</label>
+          <div class="rr">
+            <input type="range" id="wave-frames" min="12" max="48" value="24" step="4">
+            <span class="val" id="wave-frames-val">24</span>
+          </div>
+        </div>
+        <div class="row">
+          <label>Amp</label>
+          <div class="rr">
+            <input type="range" id="wave-amp" min="1" max="8" value="3">
+            <span class="val" id="wave-amp-val">3</span>
+          </div>
+        </div>
+        <div class="row">
+          <label>Freq</label>
+          <div class="rr">
+            <input type="range" id="wave-freq" min="3" max="20" value="8">
+            <span class="val" id="wave-freq-val">8</span>
+          </div>
+        </div>
+        <button class="gif-gen-btn" id="gif-wave-btn">Generate</button>
+      </div>
+      <div class="gif-mode">
+        <h3>Reveal</h3>
+        <canvas class="gif-preview" id="reveal-gif-preview"></canvas>
+        <p>Cursor sweeps around, image appears under it.</p>
+        <div class="row">
+          <label>Frames</label>
+          <div class="rr">
+            <input type="range" id="reveal-gif-frames" min="20" max="80" value="40" step="5">
+            <span class="val" id="reveal-gif-frames-val">40</span>
+          </div>
+        </div>
+        <div class="row">
+          <label>Delay ms</label>
+          <div class="rr">
+            <input type="range" id="reveal-gif-delay" min="30" max="150" value="60" step="10">
+            <span class="val" id="reveal-gif-delay-val">60</span>
+          </div>
+        </div>
+        <button class="gif-gen-btn" id="gif-reveal-btn">Generate</button>
+      </div>
+      <div class="gif-mode">
+        <h3>Plain</h3>
+        <canvas class="gif-preview" id="plain-gif-preview"></canvas>
+        <p>Random chars appear with no cursor or effect.</p>
+        <div class="row">
+          <label>Frames</label>
+          <div class="rr">
+            <input type="range" id="plain-gif-frames" min="20" max="80" value="40" step="5">
+            <span class="val" id="plain-gif-frames-val">40</span>
+          </div>
+        </div>
+        <div class="row">
+          <label>Delay ms</label>
+          <div class="rr">
+            <input type="range" id="plain-gif-delay" min="30" max="200" value="80" step="10">
+            <span class="val" id="plain-gif-delay-val">80</span>
+          </div>
+        </div>
+        <button class="gif-gen-btn" id="gif-plain-btn">Generate</button>
       </div>
     </div>
     <div class="gif-progress" id="gif-progress">
@@ -581,23 +859,33 @@ const CHARSETS = {
   minimal:  ' .:-=+*#%@',
   numbers:  ' 1234567890',
   matrix:   ' ｦｧｨｩｪｫｬｭｮｯｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿ',
+  custom:   ' .:-=+*#%@',
 };
 const SCRAMBLE_CHARS = '!@#$%^&*()_+-=[]{}|;:,.<>?/\\~`ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
 // ── State ─────────────────────────────────────────────────────────────────
 let grid = [], cols = 0, rows = 0;
-let colorMode   = 'mono';
-let monoColor   = '#44aaff';
-let bgColor     = '#0a0a0f';
-let charsetKey  = 'detailed';
-let hoverRadius = 6;
-let zoomLevel   = 1;
-let exportScale = 1;
-let scramblingCells = new Map();
+let colorMode        = 'mono';
+let monoColor        = '#44aaff';
+let bgColor          = '#0a0a0f';
+let charsetKey       = 'detailed';
+let hoverRadius      = 6;
+let zoomLevel        = 1;
+let exportScale      = 1;
+let invertBrightness = false;
+let aspectRatio      = 0.45;
+let brightnessAdj    = 0;
+let contrastAdj      = 0;
+let ditherEnabled    = false;
+let fontSize         = 8;
+let fontFamily       = '"Courier New",monospace';
+let duotoneAccent    = '#ff4400';
+let scramblingCells  = new Map();
 let animFrame = null, isRendered = false;
 
 // ── DOM ───────────────────────────────────────────────────────────────────
 const asciiEl    = document.getElementById('ascii-canvas');
+const asciiCtx   = asciiEl.getContext('2d');
 const hiddenCvs  = document.getElementById('hidden-canvas');
 const ctx        = hiddenCvs.getContext('2d');
 const expCvs     = document.getElementById('export-canvas');
@@ -617,9 +905,67 @@ const fgInput    = document.getElementById('fg-color-input');
 const bgInput    = document.getElementById('bg-color-input');
 
 // ── Controls ──────────────────────────────────────────────────────────────
-colsRange.addEventListener('input', () => { colsVal.textContent = colsRange.value; });
+const aspectRange = document.getElementById('aspect-range');
+const aspectVal   = document.getElementById('aspect-val');
+let colsDebounce = null;
+let aspectDebounce = null;
+aspectRange.addEventListener('input', () => {
+  aspectRatio = +aspectRange.value / 100;
+  aspectVal.textContent = aspectRatio.toFixed(2);
+  clearTimeout(aspectDebounce);
+  if (loadedImage) aspectDebounce = setTimeout(() => withOverlay(() => { buildGrid(loadedImage); renderAscii(); }), 300);
+});
+
+let brightnessDebounce = null, contrastDebounce = null;
+document.getElementById('brightness-range').addEventListener('input', e => {
+  brightnessAdj = +e.target.value;
+  document.getElementById('brightness-val').textContent = brightnessAdj;
+  clearTimeout(brightnessDebounce);
+  if (loadedImage) brightnessDebounce = setTimeout(() => withOverlay(() => { buildGrid(loadedImage); renderAscii(); }), 300);
+});
+document.getElementById('contrast-range').addEventListener('input', e => {
+  contrastAdj = +e.target.value;
+  document.getElementById('contrast-val').textContent = contrastAdj;
+  clearTimeout(contrastDebounce);
+  if (loadedImage) contrastDebounce = setTimeout(() => withOverlay(() => { buildGrid(loadedImage); renderAscii(); }), 300);
+});
+colsRange.addEventListener('input', () => {
+  colsVal.textContent = colsRange.value;
+  clearTimeout(colsDebounce);
+  if (loadedImage) colsDebounce = setTimeout(() => withOverlay(() => { buildGrid(loadedImage); renderAscii(); }), 300);
+});
 radRange.addEventListener('input',  () => { hoverRadius = +radRange.value; radVal.textContent = hoverRadius; });
-charsetSel.addEventListener('change', () => { charsetKey = charsetSel.value; });
+document.getElementById('fontsize-range').addEventListener('input', e => {
+  fontSize = +e.target.value;
+  document.getElementById('fontsize-val').textContent = fontSize;
+  measureChar(); applyZoom();
+  if (isRendered) renderAscii();
+});
+document.getElementById('font-sel').addEventListener('change', e => {
+  fontFamily = e.target.value;
+  measureChar(); applyZoom();
+  if (isRendered) renderAscii();
+});
+charsetSel.addEventListener('change', () => {
+  charsetKey = charsetSel.value;
+  document.getElementById('custom-charset-group').style.display = charsetKey === 'custom' ? '' : 'none';
+  if (charsetKey !== 'custom') {
+    if (loadedImage) { buildGrid(loadedImage); renderAscii(); }
+    else if (isRendered) renderAscii();
+  }
+});
+
+let customCharsetDebounce = null;
+document.getElementById('custom-charset-input').addEventListener('input', e => {
+  const val = e.target.value.trim();
+  if (val.length < 2) return;
+  CHARSETS.custom = val;
+  clearTimeout(customCharsetDebounce);
+  customCharsetDebounce = setTimeout(() => {
+    if (loadedImage) { buildGrid(loadedImage); renderAscii(); }
+    else if (isRendered) renderAscii();
+  }, 400);
+});
 bwThreshold.addEventListener('input', () => {
   bwThresholdVal.textContent = bwThreshold.value;
   if (isRendered && colorMode === 'bw') renderAscii();
@@ -631,8 +977,31 @@ document.querySelectorAll('[data-mode]').forEach(btn => {
     document.querySelectorAll('[data-mode]').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById('bw-threshold-group').style.opacity = colorMode === 'bw' ? '1' : '0.3';
+    document.getElementById('dither-group').style.opacity = colorMode === 'bw' ? '1' : '0.3';
+    document.getElementById('duotone-accent-group').style.display = colorMode === 'duotone' ? '' : 'none';
     if (isRendered) renderAscii();
   });
+});
+
+const dtSwatch = document.getElementById('dt-swatch');
+const dtInput  = document.getElementById('dt-color-input');
+dtSwatch.style.background = duotoneAccent;
+dtSwatch.addEventListener('click', () => dtInput.click());
+dtInput.addEventListener('input', () => {
+  duotoneAccent = dtInput.value;
+  dtSwatch.style.background = duotoneAccent;
+  if (isRendered && colorMode === 'duotone') renderAscii();
+});
+
+document.getElementById('invert-cb').addEventListener('change', e => {
+  invertBrightness = e.target.checked;
+  if (loadedImage) { buildGrid(loadedImage); renderAscii(); }
+  else if (isRendered) renderAscii();
+});
+
+document.getElementById('dither-cb').addEventListener('change', e => {
+  ditherEnabled = e.target.checked;
+  if (loadedImage) withOverlay(() => { buildGrid(loadedImage); renderAscii(); });
 });
 
 document.querySelectorAll('[data-quality]').forEach(btn => {
@@ -661,13 +1030,26 @@ bgInput.addEventListener('input', () => {
   wrapper.style.background = bgColor;
 });
 
+// Color presets
+document.querySelectorAll('.preset-btn').forEach(btn => {
+  const fg = '#' + btn.dataset.fg, bg = '#' + btn.dataset.bg;
+  btn.style.background = `linear-gradient(135deg, ${bg} 50%, ${fg} 50%)`;
+  btn.addEventListener('click', () => {
+    monoColor = fg; bgColor = bg;
+    fgInput.value = fg; bgInput.value = bg;
+    fgSwatch.style.background = fg; bgSwatch.style.background = bg;
+    wrapper.style.background = bg;
+    if (isRendered) renderAscii();
+  });
+});
+
 // Zoom
 function applyZoom() {
   wrapper.style.transform = `scale(${zoomLevel})`;
   wrapper.style.width  = asciiEl.offsetWidth  * zoomLevel + 'px';
   wrapper.style.height = asciiEl.offsetHeight * zoomLevel + 'px';
   zoomValEl.textContent = Math.round(zoomLevel * 100) + '%';
-  charW = 0;
+  if (baseCharW) { charW = baseCharW * zoomLevel; charH = baseCharH * zoomLevel; }
 }
 
 document.getElementById('zoom-in').addEventListener('click', () => {
@@ -676,6 +1058,7 @@ document.getElementById('zoom-in').addEventListener('click', () => {
 document.getElementById('zoom-out').addEventListener('click', () => {
   zoomLevel = Math.max(0.25, +(zoomLevel - 0.25).toFixed(2)); applyZoom();
 });
+zoomValEl.addEventListener('dblclick', () => { zoomLevel = 1; applyZoom(); });
 document.getElementById('scroll-area').addEventListener('wheel', e => {
   if (!e.ctrlKey && !e.metaKey) return;
   e.preventDefault();
@@ -698,69 +1081,175 @@ overlay.addEventListener('click', () => {
 
 // ── File upload ───────────────────────────────────────────────────────────
 let loadedImage = null;
-document.getElementById('img-upload').addEventListener('change', e => {
-  const file = e.target.files[0]; if (!file) return;
+
+const renderOverlay = document.getElementById('render-overlay');
+function withOverlay(fn) {
+  renderOverlay.classList.add('visible');
+  setTimeout(() => { fn(); renderOverlay.classList.remove('visible'); }, 16);
+}
+
+function loadImageFile(file) {
+  if (!file || !file.type.startsWith('image/')) return;
   const img = new Image();
-  img.onload = () => { loadedImage = img; buildGrid(img); renderAscii(); };
+  img.onload = () => { loadedImage = img; withOverlay(() => { buildGrid(img); renderAscii(); }); };
   img.src = URL.createObjectURL(file);
+}
+
+document.getElementById('img-upload').addEventListener('change', e => {
+  loadImageFile(e.target.files[0]);
 });
 document.getElementById('render-btn').addEventListener('click', () => {
-  if (loadedImage) { buildGrid(loadedImage); renderAscii(); }
+  if (loadedImage) withOverlay(() => { buildGrid(loadedImage); renderAscii(); });
+});
+
+// Drag & Drop
+const scrollArea = document.getElementById('scroll-area');
+scrollArea.addEventListener('dragover', e => {
+  e.preventDefault(); scrollArea.classList.add('drag-over');
+});
+scrollArea.addEventListener('dragleave', e => {
+  if (!scrollArea.contains(e.relatedTarget)) scrollArea.classList.remove('drag-over');
+});
+scrollArea.addEventListener('drop', e => {
+  e.preventDefault(); scrollArea.classList.remove('drag-over');
+  loadImageFile(e.dataTransfer.files[0]);
 });
 
 // ── Build grid ────────────────────────────────────────────────────────────
-function buildGrid(img) {
-  cols = +colsRange.value;
-  rows = Math.round(cols * (img.naturalHeight / img.naturalWidth) * 0.45);
-  hiddenCvs.width = cols; hiddenCvs.height = rows;
-  ctx.drawImage(img, 0, 0, cols, rows);
-  const data    = ctx.getImageData(0, 0, cols, rows).data;
-  const charset = CHARSETS[charsetKey];
+function buildGridFromData(data, w, h) {
+  cols = w; rows = h;
+  const charset = CHARSETS[charsetKey] || CHARSETS.minimal;
   grid = [];
+  const factor = contrastAdj !== 0 ? (259 * (contrastAdj + 255)) / (255 * (259 - contrastAdj)) : 1;
+
+  // Build adjusted pixel data and brightness map
+  const lums = new Float32Array(cols * rows);
+  const adjR = new Uint8Array(cols * rows);
+  const adjG = new Uint8Array(cols * rows);
+  const adjB = new Uint8Array(cols * rows);
   for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
-    const i = (y*cols+x)*4, r = data[i], g = data[i+1], b = data[i+2];
-    const br = (0.299*r + 0.587*g + 0.114*b) / 255;
-    const ch = charset[Math.floor(br * (charset.length-1))];
-    grid.push({ char: ch, original: ch, r, g, b });
+    const i = (y*cols+x)*4;
+    let r = data[i], g = data[i+1], b = data[i+2];
+    if (brightnessAdj !== 0) { const bv = brightnessAdj*2.55; r=Math.max(0,Math.min(255,r+bv)); g=Math.max(0,Math.min(255,g+bv)); b=Math.max(0,Math.min(255,b+bv)); }
+    if (contrastAdj !== 0)   { r=Math.max(0,Math.min(255,factor*(r-128)+128)); g=Math.max(0,Math.min(255,factor*(g-128)+128)); b=Math.max(0,Math.min(255,factor*(b-128)+128)); }
+    r=Math.round(r); g=Math.round(g); b=Math.round(b);
+    adjR[y*cols+x]=r; adjG[y*cols+x]=g; adjB[y*cols+x]=b;
+    let br = (0.299*r + 0.587*g + 0.114*b) / 255;
+    if (invertBrightness) br = 1 - br;
+    lums[y*cols+x] = br;
   }
-  scramblingCells.clear(); isRendered = true;
+
+  // Floyd-Steinberg dithering on lums
+  if (ditherEnabled) {
+    const steps = charset.length - 1;
+    for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
+      const idx = y*cols+x;
+      const old = lums[idx];
+      const q = Math.round(old * steps) / steps;
+      const err = old - q;
+      lums[idx] = q;
+      if (x+1 < cols)             lums[idx+1]      = Math.max(0, Math.min(1, lums[idx+1]      + err * 7/16));
+      if (y+1 < rows && x > 0)    lums[idx+cols-1] = Math.max(0, Math.min(1, lums[idx+cols-1] + err * 3/16));
+      if (y+1 < rows)             lums[idx+cols]   = Math.max(0, Math.min(1, lums[idx+cols]   + err * 5/16));
+      if (y+1 < rows && x+1<cols) lums[idx+cols+1] = Math.max(0, Math.min(1, lums[idx+cols+1] + err * 1/16));
+    }
+  }
+
+  // Sobel edge detection
+  const edgeMag = new Float32Array(cols * rows);
+  for (let y = 1; y < rows-1; y++) for (let x = 1; x < cols-1; x++) {
+    const tl=lums[(y-1)*cols+(x-1)], t=lums[(y-1)*cols+x], tr=lums[(y-1)*cols+(x+1)];
+    const ml=lums[y*cols+(x-1)],                            mr=lums[y*cols+(x+1)];
+    const bl=lums[(y+1)*cols+(x-1)], b=lums[(y+1)*cols+x], br2=lums[(y+1)*cols+(x+1)];
+    const gx = -tl - 2*ml - bl + tr + 2*mr + br2;
+    const gy = -tl - 2*t  - tr + bl + 2*b  + br2;
+    edgeMag[y*cols+x] = Math.min(1, Math.sqrt(gx*gx + gy*gy));
+  }
+
+  for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
+    const idx = y*cols+x;
+    const ch = charset[Math.min(charset.length-1, Math.floor(lums[idx] * charset.length))];
+    grid.push({ char: ch, original: ch, r: adjR[idx], g: adjG[idx], b: adjB[idx], edge: edgeMag[idx] });
+  }
+  scramblingCells.clear();
+  if (typeof revealedSet !== 'undefined') { stopAutoReveal(); revealedSet.clear(); }
+  isRendered = true;
+}
+
+function buildGrid(img) {
+  const c = +colsRange.value;
+  const r = Math.round(c * (img.naturalHeight / img.naturalWidth) * aspectRatio);
+  hiddenCvs.width = c; hiddenCvs.height = r;
+  ctx.drawImage(img, 0, 0, c, r);
+  buildGridFromData(ctx.getImageData(0, 0, c, r).data, c, r);
 }
 
 // ── Render ────────────────────────────────────────────────────────────────
 function renderAscii() {
-  asciiEl.style.color   = colorMode === 'mono' ? monoColor : '';
-  wrapper.style.background = bgColor;
-  let html = '';
+  const cw = baseCharW || 6, ch = baseCharH || 9;
+  const W = cols * cw, H = rows * ch;
+  if (asciiEl.width !== W || asciiEl.height !== H) {
+    asciiEl.width = W; asciiEl.height = H;
+  }
+  asciiCtx.fillStyle = bgColor;
+  asciiCtx.fillRect(0, 0, W, H);
+  asciiCtx.font = `${fontSize}px ${fontFamily}`;
+  asciiCtx.textBaseline = 'top';
+  const bwThr = +bwThreshold.value;
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
       const cell = grid[y*cols+x];
-      const ch   = esc(cell.char || ' ');
+      if (hoverMode === 'reveal' && !revealedSet.has(y*cols+x)) continue;
+      if (!cell.char || cell.char === ' ') continue;
       if (colorMode === 'color') {
-        html += `<span style="color:rgb(${cell.r},${cell.g},${cell.b})">${ch}</span>`;
+        asciiCtx.fillStyle = `rgb(${cell.r},${cell.g},${cell.b})`;
       } else if (colorMode === 'bw') {
-        if ((0.299*cell.r + 0.587*cell.g + 0.114*cell.b) >= +bwThreshold.value)
-          html += `<span style="color:#fff">${ch}</span>`;
-        else
-          html += esc(' ');
+        const lum = 0.299*cell.r + 0.587*cell.g + 0.114*cell.b;
+        if (lum < bwThr) continue;
+        const v = Math.round(lerpChannel(bwThr, 255, (lum - bwThr) / (255 - bwThr || 1)));
+        asciiCtx.fillStyle = `rgb(${v},${v},${v})`;
+      } else if (colorMode === 'duotone') {
+        asciiCtx.fillStyle = getDuotoneColor(cell);
+      } else if (colorMode === 'edge') {
+        const mag = cell.edge || 0;
+        if (mag < 0.08) continue;
+        const v = Math.round(mag * 255);
+        asciiCtx.fillStyle = `rgb(${v},${v},${v})`;
       } else {
-        html += ch;
+        asciiCtx.fillStyle = monoColor;
       }
+      asciiCtx.fillText(cell.char, x * cw, y * ch);
     }
-    html += '\n';
   }
-  asciiEl.innerHTML = html;
-}
-
-function esc(c) {
-  if (c==='<') return '&lt;'; if (c==='>') return '&gt;'; if (c==='&') return '&amp;'; return c;
+  wrapper.style.background = bgColor;
 }
 
 function hexToRgb(h) {
   return { r: parseInt(h.slice(1,3),16), g: parseInt(h.slice(3,5),16), b: parseInt(h.slice(5,7),16) };
 }
 
+function lerpChannel(a, b, t) { return Math.round(a + (b - a) * t); }
+
+function getDuotoneColor(cell) {
+  const br = (0.299*cell.r + 0.587*cell.g + 0.114*cell.b) / 255;
+  const acc = hexToRgb(duotoneAccent);
+  let r, g, b;
+  if (br < 0.5) {
+    const t = br * 2;
+    r = lerpChannel(0, acc.r, t);
+    g = lerpChannel(0, acc.g, t);
+    b = lerpChannel(0, acc.b, t);
+  } else {
+    const t = (br - 0.5) * 2;
+    r = lerpChannel(acc.r, 255, t);
+    g = lerpChannel(acc.g, 255, t);
+    b = lerpChannel(acc.b, 255, t);
+  }
+  return `rgb(${r},${g},${b})`;
+}
+
 // ── PNG Export ────────────────────────────────────────────────────────────
-document.getElementById('export-btn').addEventListener('click', () => {
+function exportPNG() {
   if (!isRendered) return;
   const fs = 8 * exportScale, cw = fs*0.6 + exportScale, ch = fs*1.2;
   const W = Math.ceil(cols*cw), H = Math.ceil(rows*ch);
@@ -772,21 +1261,142 @@ document.getElementById('export-btn').addEventListener('click', () => {
   expCtx.font = `${fs}px "Courier New",monospace`; expCtx.textBaseline = 'top';
   for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
     const cell = grid[y*cols+x]; if (!cell.char || cell.char===' ') continue;
-    if (colorMode==='color')    expCtx.fillStyle = `rgb(${cell.r},${cell.g},${cell.b})`;
-    else if (colorMode==='bw')  expCtx.fillStyle = (0.299*cell.r+0.587*cell.g+0.114*cell.b) >= +bwThreshold.value ? '#fff' : '#000';
-    else                        expCtx.fillStyle = monoColor;
+    if (colorMode==='color')        expCtx.fillStyle = `rgb(${cell.r},${cell.g},${cell.b})`;
+    else if (colorMode==='bw') {
+      const lum = 0.299*cell.r+0.587*cell.g+0.114*cell.b, thr = +bwThreshold.value;
+      if (lum < thr) continue;
+      const v = Math.round(lerpChannel(thr, 255, (lum - thr) / (255 - thr || 1)));
+      expCtx.fillStyle = `rgb(${v},${v},${v})`;
+    }
+    else if (colorMode==='duotone') expCtx.fillStyle = getDuotoneColor(cell);
+    else if (colorMode==='edge') {
+      const mag = cell.edge || 0; if (mag < 0.08) continue;
+      const v = Math.round(mag*255); expCtx.fillStyle = `rgb(${v},${v},${v})`;
+    } else                          expCtx.fillStyle = monoColor;
     expCtx.fillText(cell.char, x*cw, y*ch);
   }
   Object.assign(document.createElement('a'), { href: expCvs.toDataURL('image/png'), download: 'ascii-art.png' }).click();
+}
+
+// ── SVG Export ────────────────────────────────────────────────────────────
+function exportSVG() {
+  if (!isRendered) return;
+  const fs = 8, cw = (baseCharW || 6), lh = (baseCharH || 9);
+  const W = cols * cw, H = rows * lh;
+  const bwThr = +bwThreshold.value;
+  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  let body = '';
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      const cell = grid[y*cols+x];
+      if (!cell.char || cell.char === ' ') continue;
+      let color;
+      if (colorMode === 'color')   color = `rgb(${cell.r},${cell.g},${cell.b})`;
+      else if (colorMode === 'bw') {
+        const lum = 0.299*cell.r+0.587*cell.g+0.114*cell.b;
+        if (lum < bwThr) continue;
+        const v = Math.round(lerpChannel(bwThr,255,(lum-bwThr)/(255-bwThr||1)));
+        color = `rgb(${v},${v},${v})`;
+      } else if (colorMode === 'duotone') { color = getDuotoneColor(cell); }
+      else if (colorMode === 'edge') {
+        const mag = cell.edge||0; if (mag < 0.08) continue;
+        color = `rgb(${Math.round(mag*255)},${Math.round(mag*255)},${Math.round(mag*255)})`;
+      } else { color = monoColor; }
+      body += `<text x="${x*cw}" y="${y*lh+fs}" fill="${esc(color)}">${esc(cell.char)}</text>\n`;
+    }
+  }
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" style="background:${bgColor}">` +
+    `<style>text{font-family:"Courier New",monospace;font-size:${fs}px;letter-spacing:${cw-fs*0.6}px}</style>\n` +
+    body + `</svg>`;
+  const blob = new Blob([svg], { type: 'image/svg+xml' });
+  Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: 'ascii-art.svg' }).click();
+}
+
+// ── HTML Export ───────────────────────────────────────────────────────────
+function exportHTML() {
+  if (!isRendered) return;
+  const bwThr = +bwThreshold.value;
+  const escHtml = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  let lines = '';
+  for (let y = 0; y < rows; y++) {
+    let line = '';
+    for (let x = 0; x < cols; x++) {
+      const cell = grid[y*cols+x];
+      if (!cell.char) { line += ' '; continue; }
+      let color;
+      if (colorMode === 'color')   color = `rgb(${cell.r},${cell.g},${cell.b})`;
+      else if (colorMode === 'bw') {
+        const lum = 0.299*cell.r+0.587*cell.g+0.114*cell.b;
+        if (lum < bwThr) { line += ' '; continue; }
+        const v = Math.round(lerpChannel(bwThr,255,(lum-bwThr)/(255-bwThr||1)));
+        color = `rgb(${v},${v},${v})`;
+      } else if (colorMode === 'duotone') { color = getDuotoneColor(cell); }
+      else if (colorMode === 'edge') {
+        const mag = cell.edge||0; if (mag < 0.08) { line += ' '; continue; }
+        color = `rgb(${Math.round(mag*255)},${Math.round(mag*255)},${Math.round(mag*255)})`;
+      } else { color = monoColor; }
+      line += `<span style="color:${color}">${escHtml(cell.char)}</span>`;
+    }
+    lines += line + '\n';
+  }
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
+body{background:${bgColor};margin:0;padding:16px}
+pre{font-family:"Courier New",monospace;font-size:8px;letter-spacing:1px;line-height:1;white-space:pre}
+</style></head><body><pre>${lines}</pre></body></html>`;
+  const blob = new Blob([html], { type: 'text/html' });
+  Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: 'ascii-art.html' }).click();
+}
+
+// ── TXT Export ────────────────────────────────────────────────────────────
+function buildAsciiText() {
+  let txt = '';
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) txt += grid[y*cols+x].char || ' ';
+    txt += '\n';
+  }
+  return txt;
+}
+
+function exportTXT() {
+  if (!isRendered) return;
+  const blob = new Blob([buildAsciiText()], { type: 'text/plain' });
+  Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: 'ascii-art.txt' }).click();
+}
+
+// ── Copy Text ─────────────────────────────────────────────────────────────
+function copyText() {
+  if (!isRendered) return;
+  navigator.clipboard.writeText(buildAsciiText()).then(() => {
+    const btn = document.getElementById('save-btn');
+    const prev = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.textContent = prev; }, 1200);
+  });
+}
+
+// ── Save dispatcher ───────────────────────────────────────────────────────
+document.getElementById('save-format').addEventListener('change', e => {
+  const btn = document.getElementById('save-btn');
+  btn.textContent = e.target.value === 'copy' ? 'Copy' : 'Save';
+});
+document.getElementById('save-btn').addEventListener('click', () => {
+  const fmt = document.getElementById('save-format').value;
+  if      (fmt === 'png')  exportPNG();
+  else if (fmt === 'svg')  exportSVG();
+  else if (fmt === 'html') exportHTML();
+  else if (fmt === 'txt')  exportTXT();
+  else if (fmt === 'copy') copyText();
+  else if (fmt === 'gif')  document.getElementById('gif-modal').classList.add('open'), stopGifPreviews(), setTimeout(startAllGifPreviews, 50);
 });
 
 // ── Hover / Touch scramble ────────────────────────────────────────────────
-let charW = 0, charH = 0;
+let charW = 0, charH = 0, baseCharW = 0, baseCharH = 0;
 function measureChar() {
   const t = document.createElement('span');
-  t.style.cssText = 'position:absolute;visibility:hidden;font-size:8px;font-family:monospace;letter-spacing:1px;white-space:pre;';
+  t.style.cssText = `position:absolute;visibility:hidden;font-size:${fontSize}px;font-family:${fontFamily};letter-spacing:1px;white-space:pre;`;
   t.textContent = 'X'; document.body.appendChild(t);
-  charW = t.offsetWidth || 6; charH = t.offsetHeight || 8;
+  baseCharW = t.offsetWidth || fontSize*0.6+1; baseCharH = t.offsetHeight || fontSize*1.2;
+  charW = baseCharW * zoomLevel; charH = baseCharH * zoomLevel;
   document.body.removeChild(t);
 }
 
@@ -818,31 +1428,141 @@ function clearScramble() {
   if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
 }
 
+// ── Reveal mode ───────────────────────────────────────────────────────────
+let hoverMode = 'scramble';
+let revealedSet = new Set();
+let autoRevealRaf = null;
+
+function spawnReveal(clientX, clientY) {
+  if (!isRendered) return;
+  if (!charW) measureChar();
+  const rect = asciiEl.getBoundingClientRect();
+  const cx = Math.floor((clientX - rect.left) / zoomLevel / charW);
+  const cy = Math.floor((clientY - rect.top)  / zoomLevel / charH);
+  const r = hoverRadius;
+  for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
+    if (dx*dx + dy*dy > r*r) continue;
+    const nx = cx+dx, ny = cy+dy;
+    if (nx < 0 || ny < 0 || nx >= cols || ny >= rows) continue;
+    const idx = ny*cols+nx;
+    if (grid[idx].original === ' ') continue;
+    revealedSet.add(idx); // permanently reveal
+    if (!scramblingCells.has(idx))
+      scramblingCells.set(idx, { frames: Math.floor(6 + Math.random() * 10), elapsed: 0 });
+  }
+  if (!animFrame) tick();
+}
+
+function stopAutoReveal() {
+  if (autoRevealRaf) { cancelAnimationFrame(autoRevealRaf); autoRevealRaf = null; }
+}
+
+function resetReveal() {
+  stopAutoReveal();
+  revealedSet.clear();
+  if (isRendered) renderAscii();
+}
+
+// Hover mode buttons
+document.querySelectorAll('#hover-mode-group [data-hmode]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    hoverMode = btn.dataset.hmode;
+    document.querySelectorAll('#hover-mode-group [data-hmode]').forEach(b => b.classList.toggle('active', b === btn));
+    document.getElementById('reveal-extra').style.display = hoverMode === 'reveal' ? '' : 'none';
+    clearScramble();
+    if (hoverMode !== 'reveal') { stopAutoReveal(); revealedSet.clear(); if (isRendered) renderAscii(); }
+  });
+});
+
+document.getElementById('auto-reveal-dur').addEventListener('input', e =>
+  document.getElementById('auto-reveal-val').textContent = e.target.value);
+
+document.getElementById('reset-reveal-btn').addEventListener('click', resetReveal);
+
+document.getElementById('auto-reveal-btn').addEventListener('click', () => {
+  if (!isRendered) return;
+  stopAutoReveal();
+  revealedSet.clear();
+  // Collect non-space positions and shuffle
+  const pos = [];
+  for (let i = 0; i < grid.length; i++) if (grid[i].original && grid[i].original !== ' ') pos.push(i);
+  for (let i = pos.length-1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [pos[i],pos[j]]=[pos[j],pos[i]]; }
+  const dur = +document.getElementById('auto-reveal-dur').value * 1000;
+  const t0 = performance.now();
+  let idx = 0;
+  function step(ts) {
+    const t = Math.min(1, (ts - t0) / dur);
+    const target = Math.floor(t * pos.length);
+    while (idx < target) revealedSet.add(pos[idx++]);
+    renderAscii();
+    if (t < 1) autoRevealRaf = requestAnimationFrame(step);
+  }
+  autoRevealRaf = requestAnimationFrame(step);
+});
+
 // Mouse
-wrapper.addEventListener('mousemove', e => spawnScramble(e.clientX, e.clientY));
-wrapper.addEventListener('mouseleave', clearScramble);
+wrapper.addEventListener('mousemove', e => {
+  if (hoverMode === 'scramble') spawnScramble(e.clientX, e.clientY);
+  else if (hoverMode === 'reveal') spawnReveal(e.clientX, e.clientY);
+});
+wrapper.addEventListener('mouseleave', () => { if (hoverMode === 'scramble') clearScramble(); });
 
 // Touch
 wrapper.addEventListener('touchmove', e => {
-  spawnScramble(e.touches[0].clientX, e.touches[0].clientY);
+  if (hoverMode === 'scramble') spawnScramble(e.touches[0].clientX, e.touches[0].clientY);
+  else if (hoverMode === 'reveal') spawnReveal(e.touches[0].clientX, e.touches[0].clientY);
 }, { passive: true });
-wrapper.addEventListener('touchend',    clearScramble);
-wrapper.addEventListener('touchcancel', clearScramble);
+wrapper.addEventListener('touchend',    () => { if (hoverMode === 'scramble') clearScramble(); });
+wrapper.addEventListener('touchcancel', () => { if (hoverMode === 'scramble') clearScramble(); });
 
 // Adapt hint text for touch devices
 if (window.matchMedia('(hover: none)').matches) {
-  document.querySelector('.hint').textContent = 'Touch & drag to scramble';
+  document.querySelector('.hint').textContent = 'Touch & drag to reveal/scramble';
+}
+
+function drawCell(idx) {
+  const cw = baseCharW || 6, ch = baseCharH || 9;
+  const x = idx % cols, y = Math.floor(idx / cols);
+  const cell = grid[idx];
+  // Clear cell
+  asciiCtx.fillStyle = bgColor;
+  asciiCtx.fillRect(x * cw, y * ch, cw + 1, ch + 1);
+  if (!cell.char || cell.char === ' ') return;
+  if (colorMode === 'color')       asciiCtx.fillStyle = `rgb(${cell.r},${cell.g},${cell.b})`;
+  else if (colorMode === 'bw') {
+    const lum = 0.299*cell.r + 0.587*cell.g + 0.114*cell.b;
+    const thr = +bwThreshold.value;
+    if (lum < thr) return;
+    const v = Math.round(lerpChannel(thr, 255, (lum - thr) / (255 - thr || 1)));
+    asciiCtx.fillStyle = `rgb(${v},${v},${v})`;
+  } else if (colorMode === 'edge') {
+    const mag = cell.edge || 0;
+    if (mag < 0.08) return;
+    const v = Math.round(mag * 255);
+    asciiCtx.fillStyle = `rgb(${v},${v},${v})`;
+  } else if (colorMode === 'duotone') {
+    asciiCtx.fillStyle = getDuotoneColor(cell);
+  } else {
+    asciiCtx.fillStyle = monoColor;
+  }
+  asciiCtx.fillText(cell.char, x * cw, y * ch);
 }
 
 function tick() {
   if (!scramblingCells.size) { animFrame = null; renderAscii(); return; }
+  asciiCtx.font = `${fontSize}px ${fontFamily}`;
+  asciiCtx.textBaseline = 'top';
   for (const [idx, s] of scramblingCells) {
     s.elapsed++;
     if (s.elapsed >= s.frames) { grid[idx].char = grid[idx].original; scramblingCells.delete(idx); }
     else grid[idx].char = SCRAMBLE_CHARS[Math.floor(Math.random()*SCRAMBLE_CHARS.length)];
+    drawCell(idx);
   }
-  renderAscii(); animFrame = requestAnimationFrame(tick);
+  animFrame = requestAnimationFrame(tick);
 }
+
+measureChar();
+wrapper.style.background = bgColor;
 
 // ── Default globe demo ────────────────────────────────────────────────────
 (function loadDefault() {
@@ -864,20 +1584,31 @@ function tick() {
   isRendered = true; renderAscii();
 })();
 
-measureChar();
-wrapper.style.background = bgColor;
-
 // ── GIF Modal ─────────────────────────────────────────────────────────────
-document.getElementById('gif-btn').addEventListener('click', () =>
-  document.getElementById('gif-modal').classList.add('open'));
-document.getElementById('gif-modal-close').addEventListener('click', () =>
-  document.getElementById('gif-modal').classList.remove('open'));
+function startAllGifPreviews() {
+  startThresholdPreview();
+  startScramblePreview();
+  startFadePreview();
+  startCyclePreview();
+  startWavePreview();
+  startRevealGifPreview();
+  startPlainGifPreview();
+}
+function closeGifModal() {
+  document.getElementById('gif-modal').classList.remove('open');
+  stopGifPreviews();
+}
+document.getElementById('gif-modal-close').addEventListener('click', closeGifModal);
 document.getElementById('gif-modal').addEventListener('click', e => {
-  if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
+  if (e.target === e.currentTarget) closeGifModal();
 });
 
 [['th-frames','th-frames-val'],['th-delay','th-delay-val'],
- ['sc-fps','sc-fps-val'],['sc-cursors','sc-cur-val']].forEach(([id,vid]) => {
+ ['sc-fps','sc-fps-val'],['sc-cursors','sc-cur-val'],
+ ['fade-frames','fade-frames-val'],['fade-delay','fade-delay-val'],
+ ['cycle-frames','cycle-frames-val'],['cycle-delay','cycle-delay-val'],['cycle-sat','cycle-sat-val'],
+ ['wave-frames','wave-frames-val'],['wave-amp','wave-amp-val'],['wave-freq','wave-freq-val'],
+].forEach(([id,vid]) => {
   document.getElementById(id).addEventListener('input', () => {
     document.getElementById(vid).textContent = document.getElementById(id).value;
   });
@@ -885,6 +1616,18 @@ document.getElementById('gif-modal').addEventListener('click', e => {
 
 document.getElementById('gif-threshold-btn').addEventListener('click', generateThresholdGIF);
 document.getElementById('gif-scramble-btn').addEventListener('click',   generateScrambleGIF);
+document.getElementById('gif-fade-btn').addEventListener('click',       generateFadeGIF);
+document.getElementById('gif-cycle-btn').addEventListener('click',      generateColorCycleGIF);
+document.getElementById('gif-wave-btn').addEventListener('click',       generateWaveGIF);
+document.getElementById('gif-reveal-btn').addEventListener('click',     generateRevealGIF);
+document.getElementById('gif-plain-btn').addEventListener('click',      generatePlainGIF);
+
+[['reveal-gif-frames','reveal-gif-frames-val'],['reveal-gif-delay','reveal-gif-delay-val'],
+ ['plain-gif-frames','plain-gif-frames-val'],['plain-gif-delay','plain-gif-delay-val']
+].forEach(([id, vid]) => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', () => document.getElementById(vid).textContent = el.value);
+});
 
 // ── GIF helpers ───────────────────────────────────────────────────────────
 function setProgress(r, txt) {
@@ -1005,6 +1748,25 @@ function encodeGIF(frames,W,H,pal,delayMs){
   push(0x3B); return new Uint8Array(b);
 }
 
+function encodeGIFVar(frames,W,H,pal,delays){
+  const b=[],push=(...a)=>a.forEach(v=>b.push(v&0xFF)),word=w=>push(w&0xFF,(w>>8)&0xFF);
+  let csf=0; while((1<<(csf+1))<pal.length)csf++;
+  const cte=1<<(csf+1), mcs=Math.max(2,csf+1);
+  push(0x47,0x49,0x46,0x38,0x39,0x61);word(W);word(H);push(0x80|csf,0,0);
+  for(let i=0;i<cte;i++){const c=i<pal.length?pal[i]:[0,0,0];push(c[0],c[1],c[2]);}
+  push(0x21,0xFF,0x0B,0x4E,0x45,0x54,0x53,0x43,0x41,0x50,0x45,0x32,0x2E,0x30,0x03,0x01);word(0);push(0x00);
+  for(let fi=0;fi<frames.length;fi++){
+    const dc=Math.max(1,Math.round((delays[fi]||50)/10));
+    push(0x21,0xF9,0x04,0x00);word(dc);push(0x00,0x00);
+    push(0x2C);word(0);word(0);word(W);word(H);push(0x00);
+    push(mcs);
+    const lzw=lzwEncode(frames[fi],mcs);
+    for(let i=0;i<lzw.length;i+=255){const e=Math.min(i+255,lzw.length);push(e-i);for(let j=i;j<e;j++)push(lzw[j]);}
+    push(0x00);
+  }
+  push(0x3B);return new Uint8Array(b);
+}
+
 function downloadGIF(bytes,name){
   Object.assign(document.createElement('a'),{
     href:URL.createObjectURL(new Blob([bytes],{type:'image/gif'})), download:name
@@ -1090,6 +1852,609 @@ async function generateScrambleGIF(){
   downloadGIF(encodeGIF(frames,W,H,pal,delay),'ascii-scramble.gif');
   hideProgress();
 }
+
+// ── GIF: Typewriter ───────────────────────────────────────────────────────
+async function generateFadeGIF() {
+  if (!isRendered) return;
+  const speed     = +document.getElementById('fade-frames').value;
+  const baseDelay = +document.getElementById('fade-delay').value;
+  const mode      = colorMode;
+  const { W, H }  = gifCanvasSize();
+  const pal       = buildPalette(mode);
+  const oc        = document.createElement('canvas'), ox = oc.getContext('2d');
+  const orig      = grid.map(c => c.char);
+
+  // Non-space positions in reading order
+  const positions = [];
+  for (let i = 0; i < orig.length; i++) if (orig[i] && orig[i] !== ' ') positions.push(i);
+
+  // Distribute all chars across `speed` typing frames + ~10% pause frames
+  // avgBurst = total / frames, random variation ±60% so it still looks like typing
+  const targetFrames = speed; // speed slider now = total frame count
+  const avgBurst = Math.max(1, positions.length / targetFrames);
+  const schedule = [];
+  let p = 0;
+  while (p < positions.length) {
+    if (Math.random() < 0.08 && p > 0)
+      schedule.push({ pos: p, delay: baseDelay * 4 }); // pause frame
+    const burst = Math.max(1, Math.round(avgBurst * (0.4 + Math.random() * 1.2)));
+    p = Math.min(p + burst, positions.length);
+    schedule.push({ pos: p, delay: Math.round(baseDelay * (0.5 + Math.random() * 0.8)) });
+  }
+  schedule.push({ pos: positions.length, delay: baseDelay * 20 }); // final hold
+
+  const frames = [], delays = [];
+  for (let f = 0; f < schedule.length; f++) {
+    const { pos, delay } = schedule[f];
+    for (let i = 0; i < orig.length; i++) grid[i].char = ' ';
+    for (let i = 0; i < pos; i++) grid[positions[i]].char = orig[positions[i]];
+    if (pos < positions.length) grid[positions[pos]].char = '█';
+    frames.push(renderGridToIndexed(oc, ox, mode, +bwThreshold.value, pal));
+    delays.push(delay);
+    setProgress(pos / positions.length, `Frame ${f+1} / ${schedule.length}…`);
+    if (f % 8 === 0) await yieldUI();
+  }
+  grid.forEach((c, i) => { c.char = orig[i]; });
+  setProgress(1, 'Encoding…'); await yieldUI();
+  downloadGIF(encodeGIFVar(frames, W, H, pal, delays), 'ascii-type.gif');
+  hideProgress();
+}
+
+// ── GIF: Color Cycle ──────────────────────────────────────────────────────
+async function generateColorCycleGIF() {
+  if (!isRendered) return;
+  const n   = +document.getElementById('cycle-frames').value;
+  const d   = +document.getElementById('cycle-delay').value;
+  const sat = +document.getElementById('cycle-sat').value;
+  const { W, H } = gifCanvasSize();
+  // Use full color palette for rich hue range
+  const pal = buildPalette('color');
+  const oc  = document.createElement('canvas'), ox = oc.getContext('2d');
+  const frames = [];
+  const origMono = monoColor;
+
+  for (let f = 0; f < n; f++) {
+    const hue = (f / n) * 360;
+    const { r, g, b } = hslToRgb(hue, sat, 55);
+    monoColor = `#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${b.toString(16).padStart(2,'0')}`;
+    frames.push(renderGridToIndexed(oc, ox, 'mono', +bwThreshold.value, pal));
+    setProgress((f+1)/n, `Frame ${f+1} / ${n}…`);
+    if (f%4===0) await yieldUI();
+  }
+  monoColor = origMono;
+  setProgress(1,'Encoding…'); await yieldUI();
+  downloadGIF(encodeGIF(frames, W, H, pal, d), 'ascii-cycle.gif');
+  hideProgress();
+}
+
+// ── GIF: Wave ─────────────────────────────────────────────────────────────
+async function generateWaveGIF() {
+  if (!isRendered) return;
+  const n    = +document.getElementById('wave-frames').value;
+  const amp  = +document.getElementById('wave-amp').value;
+  const freq = +document.getElementById('wave-freq').value;
+  const mode = colorMode;
+  const { W, H } = gifCanvasSize();
+  const pal  = buildPalette(mode);
+  const oc   = document.createElement('canvas'), ox = oc.getContext('2d');
+  const orig = grid.map(c => c.char);
+  const frames = [];
+  const delay = 60;
+
+  for (let f = 0; f < n; f++) {
+    const phase = (f / n) * Math.PI * 2;
+    for (let x = 0; x < cols; x++) {
+      const shift = Math.round(Math.sin(x / freq + phase) * amp);
+      for (let y = 0; y < rows; y++) {
+        const srcY = y - shift;
+        grid[y*cols+x].char = (srcY >= 0 && srcY < rows) ? orig[srcY*cols+x] : ' ';
+      }
+    }
+    frames.push(renderGridToIndexed(oc, ox, mode, +bwThreshold.value, pal));
+    setProgress((f+1)/n, `Frame ${f+1} / ${n}…`);
+    if (f%4===0) await yieldUI();
+  }
+  grid.forEach((c, i) => { c.char = orig[i]; }); renderAscii();
+  setProgress(1,'Encoding…'); await yieldUI();
+  downloadGIF(encodeGIF(frames, W, H, pal, delay), 'ascii-wave.gif');
+  hideProgress();
+}
+
+// ── GIF Previews ──────────────────────────────────────────────────────────
+let thPreviewRaf = null, scPreviewRaf = null, fadePreviewRaf = null, cyclePreviewRaf = null, wavePreviewRaf = null, revealGifRaf = null, plainGifRaf = null;
+
+// HSL helper for color cycle
+function hslToRgb(h, s, l) {
+  h /= 360; s /= 100; l /= 100;
+  const hue2rgb = (p, q, t) => {
+    if (t < 0) t += 1; if (t > 1) t -= 1;
+    if (t < 1/6) return p+(q-p)*6*t;
+    if (t < 1/2) return q;
+    if (t < 2/3) return p+(q-p)*(2/3-t)*6;
+    return p;
+  };
+  if (s === 0) { const v = Math.round(l*255); return { r:v,g:v,b:v }; }
+  const q = l < 0.5 ? l*(1+s) : l+s-l*s, p = 2*l-q;
+  return { r: Math.round(hue2rgb(p,q,h+1/3)*255), g: Math.round(hue2rgb(p,q,h)*255), b: Math.round(hue2rgb(p,q,h-1/3)*255) };
+}
+
+function renderToPreviewCanvas(cvs, cellChars, opts = {}) {
+  if (!cols || !rows) return;
+  const fs = 5, cw = fs * 0.6 + 0.5, lh = fs * 1.15;
+  const W = Math.ceil(cols * cw), H = Math.ceil(rows * lh);
+  if (cvs.width !== W || cvs.height !== H) { cvs.width = W; cvs.height = H; cvs.style.aspectRatio = `${W} / ${H}`; }
+  const pctx = cvs.getContext('2d');
+  pctx.fillStyle = bgColor;
+  pctx.fillRect(0, 0, W, H);
+  pctx.font = `${fs}px "Courier New",monospace`;
+  pctx.textBaseline = 'top';
+  const bwThr  = opts.bwThr  ?? +bwThreshold.value;
+  const fgOver = opts.color  ?? null;  // override fill color for all chars
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      const cell = grid[y*cols+x];
+      const char = cellChars ? cellChars[y*cols+x] : cell.char;
+      if (!char || char === ' ') continue;
+      if (fgOver) {
+        pctx.fillStyle = fgOver;
+      } else if (colorMode === 'color') {
+        pctx.fillStyle = `rgb(${cell.r},${cell.g},${cell.b})`;
+      } else if (colorMode === 'bw') {
+        const lum = 0.299*cell.r+0.587*cell.g+0.114*cell.b;
+        if (lum < bwThr) continue;
+        const v = Math.round(lerpChannel(bwThr,255,(lum-bwThr)/(255-bwThr||1)));
+        pctx.fillStyle = `rgb(${v},${v},${v})`;
+      } else if (colorMode === 'duotone') {
+        pctx.fillStyle = getDuotoneColor(cell);
+      } else if (colorMode === 'edge') {
+        const mag = cell.edge||0; if (mag < 0.08) continue;
+        pctx.fillStyle = `rgb(${Math.round(mag*255)},${Math.round(mag*255)},${Math.round(mag*255)})`;
+      } else {
+        pctx.fillStyle = monoColor;
+      }
+      pctx.fillText(char, x * cw, y * lh);
+    }
+  }
+}
+
+function startThresholdPreview() {
+  const cvs = document.getElementById('th-preview');
+  if (!cvs || !isRendered) return;
+  let thr = 255, dir = -1;
+  const delay = +document.getElementById('th-delay').value;
+  let last = 0;
+
+  function tick(ts) {
+    if (ts - last >= delay) {
+      last = ts;
+      renderToPreviewCanvas(cvs, null, { bwThr: thr });
+      thr += dir * Math.round(255 / 32);
+      if (thr <= 0)   { thr = 0;   dir =  1; }
+      if (thr >= 255) { thr = 255; dir = -1; }
+    }
+    thPreviewRaf = requestAnimationFrame(tick);
+  }
+  thPreviewRaf = requestAnimationFrame(tick);
+}
+
+function startScramblePreview() {
+  const cvs = document.getElementById('sc-preview');
+  if (!cvs || !isRendered) return;
+  const previewChars = grid.map(c => c.char);
+  const ls = new Map();
+  const nc = +document.getElementById('sc-cursors').value;
+  const cursors = Array.from({length: nc}, () => ({
+    x: Math.random()*cols, y: Math.random()*rows,
+    vx: (Math.random()-.5)*10, vy: (Math.random()-.5)*5
+  }));
+  let last = 0;
+
+  function tick(ts) {
+    const fps = +document.getElementById('sc-fps').value;
+    if (ts - last >= 1000/fps) {
+      last = ts;
+      for (const cur of cursors) {
+        cur.x += cur.vx+(Math.random()-.5)*3; cur.y += cur.vy+(Math.random()-.5)*2;
+        if(cur.x<0||cur.x>=cols){cur.vx*=-1;cur.x=Math.max(0,Math.min(cols-1,cur.x));}
+        if(cur.y<0||cur.y>=rows){cur.vy*=-1;cur.y=Math.max(0,Math.min(rows-1,cur.y));}
+        if(Math.random()<.04){cur.vx=(Math.random()-.5)*10;cur.vy=(Math.random()-.5)*5;}
+        const cx=Math.round(cur.x),cy=Math.round(cur.y),r=hoverRadius;
+        for(let dy=-r;dy<=r;dy++) for(let dx=-r;dx<=r;dx++){
+          if(dx*dx+dy*dy>r*r)continue;
+          const nx=cx+dx,ny=cy+dy;
+          if(nx<0||ny<0||nx>=cols||ny>=rows)continue;
+          if(Math.random()>(1-Math.sqrt(dx*dx+dy*dy)/r)*.35)continue;
+          const idx=ny*cols+nx;
+          if(grid[idx].original===' ')continue;
+          if(!ls.has(idx))ls.set(idx,{frames:Math.floor(8+Math.random()*12),elapsed:0});
+        }
+      }
+      for(const [idx,s] of ls){
+        s.elapsed++;
+        if(s.elapsed>=s.frames){previewChars[idx]=grid[idx].original;ls.delete(idx);}
+        else previewChars[idx]=SCRAMBLE_CHARS[Math.floor(Math.random()*SCRAMBLE_CHARS.length)];
+      }
+      renderToPreviewCanvas(cvs, previewChars);
+    }
+    scPreviewRaf = requestAnimationFrame(tick);
+  }
+  scPreviewRaf = requestAnimationFrame(tick);
+}
+
+function startFadePreview() {
+  const cvs = document.getElementById('fade-preview');
+  if (!cvs || !isRendered) return;
+  const chars = grid.map(c => c.char);
+  const positions = [];
+  for (let i = 0; i < chars.length; i++) if (chars[i] && chars[i] !== ' ') positions.push(i);
+
+  let pos = 0, nextType = 0, endPause = 0;
+  // Target ~4s cycle: avgInterval = 4000ms / targetFrames
+  const avgInterval = () => Math.max(15, 4000 / +document.getElementById('fade-frames').value);
+  const avgBurst    = () => Math.max(1, positions.length / +document.getElementById('fade-frames').value);
+
+  function tick(ts) {
+    if (endPause > 0) {
+      if (ts >= endPause) { pos = 0; endPause = 0; nextType = ts + 300; }
+    } else if (ts >= nextType && pos < positions.length) {
+      if (Math.random() < 0.07) {
+        nextType = ts + avgInterval() * 3; // random pause
+      } else {
+        const burst = Math.max(1, Math.round(avgBurst() * (0.4 + Math.random() * 1.2)));
+        pos = Math.min(pos + burst, positions.length);
+        nextType = ts + avgInterval() * (0.5 + Math.random() * 0.8);
+        if (pos >= positions.length) endPause = ts + 1800;
+      }
+    }
+
+    const fc = new Array(chars.length).fill(' ');
+    for (let i = 0; i < pos; i++) fc[positions[i]] = chars[positions[i]];
+    // blinking cursor
+    if (pos < positions.length && (ts % 650) < 420) fc[positions[pos]] = '█';
+    renderToPreviewCanvas(cvs, fc);
+
+    fadePreviewRaf = requestAnimationFrame(tick);
+  }
+  fadePreviewRaf = requestAnimationFrame(tick);
+}
+
+function startCyclePreview() {
+  const cvs = document.getElementById('cycle-preview');
+  if (!cvs || !isRendered) return;
+  let hue = 0;
+  let last = 0;
+  function tick(ts) {
+    if (ts - last >= 40) {
+      last = ts;
+      const sat = +document.getElementById('cycle-sat').value;
+      const { r, g, b } = hslToRgb(hue, sat, 55);
+      renderToPreviewCanvas(cvs, null, { color: `rgb(${r},${g},${b})` });
+      hue = (hue + 4) % 360;
+    }
+    cyclePreviewRaf = requestAnimationFrame(tick);
+  }
+  cyclePreviewRaf = requestAnimationFrame(tick);
+}
+
+function startWavePreview() {
+  const cvs = document.getElementById('wave-preview');
+  if (!cvs || !isRendered) return;
+  const orig = grid.map(c => c.char);
+  let phase = 0;
+  let last = 0;
+  function tick(ts) {
+    if (ts - last >= 50) {
+      last = ts;
+      const amp  = +document.getElementById('wave-amp').value;
+      const freq = +document.getElementById('wave-freq').value;
+      const wc = new Array(cols * rows).fill(' ');
+      for (let x = 0; x < cols; x++) {
+        const shift = Math.round(Math.sin(x / freq + phase) * amp);
+        for (let y = 0; y < rows; y++) {
+          const srcY = y - shift;
+          if (srcY >= 0 && srcY < rows) wc[y*cols+x] = orig[srcY*cols+x];
+        }
+      }
+      renderToPreviewCanvas(cvs, wc);
+      phase += 0.18;
+    }
+    wavePreviewRaf = requestAnimationFrame(tick);
+  }
+  wavePreviewRaf = requestAnimationFrame(tick);
+}
+
+// ── GIF: Reveal (cursor sweep) ────────────────────────────────────────────
+async function generateRevealGIF() {
+  if (!isRendered) return;
+  const n    = +document.getElementById('reveal-gif-frames').value;
+  const d    = +document.getElementById('reveal-gif-delay').value;
+  const r    = hoverRadius;
+  const mode = colorMode;
+  const { W, H } = gifCanvasSize();
+  const pal  = buildPalette(mode);
+  const oc   = document.createElement('canvas'), ox = oc.getContext('2d');
+  const orig = grid.map(c => c.char);
+  const revealed = new Set();
+  const frames = [];
+  let cx = Math.floor(cols / 2), cy = Math.floor(rows / 2);
+  for (let f = 0; f < n; f++) {
+    cx = Math.max(0, Math.min(cols-1, cx + Math.round((Math.random()-0.5) * cols * 0.35)));
+    cy = Math.max(0, Math.min(rows-1, cy + Math.round((Math.random()-0.5) * rows * 0.35)));
+    for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
+      if (dx*dx + dy*dy > r*r) continue;
+      const nx = cx+dx, ny = cy+dy;
+      if (nx >= 0 && ny >= 0 && nx < cols && ny < rows) revealed.add(ny*cols+nx);
+    }
+    for (let i = 0; i < orig.length; i++) grid[i].char = revealed.has(i) ? orig[i] : ' ';
+    frames.push(renderGridToIndexed(oc, ox, mode, +bwThreshold.value, pal));
+    grid.forEach((c, i) => { c.char = orig[i]; });
+    setProgress((f+1)/n, `Frame ${f+1} / ${n}…`);
+    if (f % 4 === 0) await yieldUI();
+  }
+  setProgress(1, 'Encoding…'); await yieldUI();
+  downloadGIF(encodeGIF(frames, W, H, pal, d), 'ascii-reveal.gif');
+  hideProgress();
+}
+
+// ── GIF: Plain reveal ─────────────────────────────────────────────────────
+async function generatePlainGIF() {
+  if (!isRendered) return;
+  const n    = +document.getElementById('plain-gif-frames').value;
+  const d    = +document.getElementById('plain-gif-delay').value;
+  const mode = colorMode;
+  const { W, H } = gifCanvasSize();
+  const pal  = buildPalette(mode);
+  const oc   = document.createElement('canvas'), ox = oc.getContext('2d');
+  const orig = grid.map(c => c.char);
+  const pos  = [];
+  for (let i = 0; i < orig.length; i++) if (orig[i] && orig[i] !== ' ') pos.push(i);
+  for (let i = pos.length-1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [pos[i],pos[j]]=[pos[j],pos[i]]; }
+  const perFrame = Math.ceil(pos.length / n);
+  const frames = [];
+  for (let f = 0; f < n; f++) {
+    const count = Math.min((f+1)*perFrame, pos.length);
+    for (let i = 0; i < orig.length; i++) grid[i].char = ' ';
+    for (let i = 0; i < count; i++) grid[pos[i]].char = orig[pos[i]];
+    frames.push(renderGridToIndexed(oc, ox, mode, +bwThreshold.value, pal));
+    grid.forEach((c, i) => { c.char = orig[i]; });
+    setProgress((f+1)/n, `Frame ${f+1} / ${n}…`);
+    if (f % 4 === 0) await yieldUI();
+  }
+  setProgress(1, 'Encoding…'); await yieldUI();
+  downloadGIF(encodeGIF(frames, W, H, pal, d), 'ascii-plain.gif');
+  hideProgress();
+}
+
+// ── Preview: Reveal ───────────────────────────────────────────────────────
+function startRevealGifPreview() {
+  const cvs = document.getElementById('reveal-gif-preview');
+  if (!cvs || !isRendered) return;
+  const chars = grid.map(c => c.char);
+  const total = chars.filter(c => c && c !== ' ').length;
+  const revealed = new Set();
+  let cx = Math.floor(cols/2), cy = Math.floor(rows/2), last = 0;
+  function tick(ts) {
+    if (ts - last >= 80) {
+      last = ts;
+      cx = Math.max(0, Math.min(cols-1, cx + Math.round((Math.random()-.5)*cols*.35)));
+      cy = Math.max(0, Math.min(rows-1, cy + Math.round((Math.random()-.5)*rows*.35)));
+      const r = hoverRadius;
+      for (let dy=-r; dy<=r; dy++) for (let dx=-r; dx<=r; dx++) {
+        if (dx*dx+dy*dy > r*r) continue;
+        const nx=cx+dx, ny=cy+dy;
+        if (nx>=0&&ny>=0&&nx<cols&&ny<rows) revealed.add(ny*cols+nx);
+      }
+      if (revealed.size >= total) revealed.clear();
+      const fc = chars.map((c,i) => revealed.has(i) ? c : ' ');
+      renderToPreviewCanvas(cvs, fc);
+    }
+    revealGifRaf = requestAnimationFrame(tick);
+  }
+  revealGifRaf = requestAnimationFrame(tick);
+}
+
+// ── Preview: Plain ────────────────────────────────────────────────────────
+function startPlainGifPreview() {
+  const cvs = document.getElementById('plain-gif-preview');
+  if (!cvs || !isRendered) return;
+  const chars = grid.map(c => c.char);
+  const pos = [];
+  for (let i = 0; i < chars.length; i++) if (chars[i] && chars[i] !== ' ') pos.push(i);
+  const shuffle = () => { for (let i=pos.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pos[i],pos[j]]=[pos[j],pos[i]];} };
+  shuffle();
+  const step = Math.max(1, Math.ceil(pos.length / 50));
+  let idx = 0, last = 0;
+  function tick(ts) {
+    if (ts - last >= 60) {
+      last = ts;
+      idx = Math.min(idx + step, pos.length);
+      if (idx >= pos.length) { idx = 0; shuffle(); }
+      const fc = new Array(chars.length).fill(' ');
+      for (let i = 0; i < idx; i++) fc[pos[i]] = chars[pos[i]];
+      renderToPreviewCanvas(cvs, fc);
+    }
+    plainGifRaf = requestAnimationFrame(tick);
+  }
+  plainGifRaf = requestAnimationFrame(tick);
+}
+
+function stopGifPreviews() {
+  [thPreviewRaf, scPreviewRaf, fadePreviewRaf, cyclePreviewRaf, wavePreviewRaf, revealGifRaf, plainGifRaf].forEach(r => r && cancelAnimationFrame(r));
+  thPreviewRaf = scPreviewRaf = fadePreviewRaf = cyclePreviewRaf = wavePreviewRaf = revealGifRaf = plainGifRaf = null;
+}
+
+// ── URL State ─────────────────────────────────────────────────────────────
+function saveState() {
+  const p = new URLSearchParams({
+    mode:    colorMode,
+    charset: charsetKey,
+    fg:      monoColor.slice(1),
+    bg:      bgColor.slice(1),
+    cols:    colsRange.value,
+    radius:  hoverRadius,
+    zoom:    zoomLevel,
+    quality: exportScale,
+    aspect:  aspectRange.value,
+    bwThr:   bwThreshold.value,
+    invert:  invertBrightness ? '1' : '0',
+    dt:      duotoneAccent.slice(1),
+  });
+  history.replaceState(null, '', '#' + p.toString());
+}
+
+function loadState() {
+  if (!location.hash) return;
+  try {
+    const p = new URLSearchParams(location.hash.slice(1));
+    if (p.has('mode')) {
+      colorMode = p.get('mode');
+      document.querySelectorAll('[data-mode]').forEach(b => {
+        b.classList.toggle('active', b.dataset.mode === colorMode);
+      });
+      document.getElementById('bw-threshold-group').style.opacity = colorMode === 'bw' ? '1' : '0.3';
+      document.getElementById('duotone-accent-group').style.display = colorMode === 'duotone' ? '' : 'none';
+    }
+    if (p.has('charset')) {
+      charsetKey = p.get('charset');
+      document.getElementById('charset-sel').value = charsetKey;
+    }
+    if (p.has('fg')) { monoColor = '#' + p.get('fg'); fgInput.value = monoColor; fgSwatch.style.background = monoColor; }
+    if (p.has('bg')) { bgColor = '#' + p.get('bg'); bgInput.value = bgColor; bgSwatch.style.background = bgColor; wrapper.style.background = bgColor; }
+    if (p.has('cols')) { colsRange.value = p.get('cols'); colsVal.textContent = p.get('cols'); }
+    if (p.has('radius')) { hoverRadius = +p.get('radius'); radRange.value = hoverRadius; radVal.textContent = hoverRadius; }
+    if (p.has('zoom')) { zoomLevel = +p.get('zoom'); applyZoom(); }
+    if (p.has('quality')) {
+      exportScale = +p.get('quality');
+      document.querySelectorAll('[data-quality]').forEach(b => {
+        b.classList.toggle('active', +b.dataset.quality === exportScale);
+      });
+    }
+    if (p.has('aspect')) {
+      aspectRange.value = p.get('aspect');
+      aspectRatio = +p.get('aspect') / 100;
+      aspectVal.textContent = aspectRatio.toFixed(2);
+    }
+    if (p.has('bwThr')) { bwThreshold.value = p.get('bwThr'); bwThresholdVal.textContent = p.get('bwThr'); }
+    if (p.has('invert')) {
+      invertBrightness = p.get('invert') === '1';
+      document.getElementById('invert-cb').checked = invertBrightness;
+    }
+    if (p.has('dt')) {
+      duotoneAccent = '#' + p.get('dt');
+      dtInput.value = duotoneAccent;
+      dtSwatch.style.background = duotoneAccent;
+    }
+  } catch(e) {}
+}
+
+loadState();
+
+// Auto-save on any settings change
+['input','change'].forEach(evt => {
+  document.querySelector('.sidebar').addEventListener(evt, saveState, { passive: true });
+});
+
+// ── Webcam ────────────────────────────────────────────────────────────────
+let webcamStream = null, webcamRaf = null;
+const webcamVideo = document.createElement('video');
+webcamVideo.playsInline = true; webcamVideo.muted = true;
+
+function stopWebcam() {
+  if (webcamStream) { webcamStream.getTracks().forEach(t => t.stop()); webcamStream = null; }
+  if (webcamRaf)    { cancelAnimationFrame(webcamRaf); webcamRaf = null; }
+  webcamVideo.srcObject = null;
+  document.getElementById('webcam-btn').textContent = 'Webcam';
+  document.getElementById('webcam-snap-btn').style.display = 'none';
+}
+
+function webcamTick() {
+  if (!webcamStream) return;
+  if (webcamVideo.readyState >= 2) {
+    const c = +colsRange.value;
+    const r = Math.round(c * webcamVideo.videoHeight / webcamVideo.videoWidth * aspectRatio);
+    hiddenCvs.width = c; hiddenCvs.height = r;
+    ctx.drawImage(webcamVideo, 0, 0, c, r);
+    buildGridFromData(ctx.getImageData(0, 0, c, r).data, c, r);
+    renderAscii();
+  }
+  webcamRaf = requestAnimationFrame(webcamTick);
+}
+
+document.getElementById('webcam-btn').addEventListener('click', async () => {
+  if (webcamStream) { stopWebcam(); return; }
+  try {
+    webcamStream = await navigator.mediaDevices.getUserMedia({ video: true });
+    webcamVideo.srcObject = webcamStream;
+    await webcamVideo.play();
+    document.getElementById('webcam-btn').textContent = 'Stop';
+    document.getElementById('webcam-snap-btn').style.display = '';
+    isRendered = true;
+    webcamTick();
+  } catch(e) {
+    const btn = document.getElementById('webcam-btn');
+    btn.textContent = 'Denied'; setTimeout(() => { btn.textContent = 'Webcam'; }, 2000);
+  }
+});
+
+document.getElementById('webcam-snap-btn').addEventListener('click', () => {
+  stopWebcam();
+});
+
+// ── URL load ──────────────────────────────────────────────────────────────
+function loadImageFromURL(url) {
+  if (!url) return;
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = () => { loadedImage = img; withOverlay(() => { buildGrid(img); renderAscii(); }); };
+  img.onerror = () => {
+    const btn = document.getElementById('url-btn');
+    btn.textContent = 'Error'; setTimeout(() => { btn.textContent = 'Go'; }, 2000);
+  };
+  img.src = url;
+}
+document.getElementById('url-btn').addEventListener('click', () => {
+  loadImageFromURL(document.getElementById('url-input').value.trim());
+});
+document.getElementById('url-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') loadImageFromURL(e.target.value.trim());
+});
+
+// ── Paste image (Ctrl+V) ──────────────────────────────────────────────────
+document.addEventListener('paste', e => {
+  const item = [...e.clipboardData.items].find(it => it.type.startsWith('image/'));
+  if (!item) return;
+  e.preventDefault();
+  loadImageFile(item.getAsFile());
+});
+
+// ── Keyboard shortcuts ────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  const tag = document.activeElement.tagName;
+  if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
+
+  if (e.key === 'Escape') {
+    document.getElementById('gif-modal').classList.remove('open');
+    sidebar.classList.remove('open');
+    document.getElementById('sidebar-overlay').classList.remove('open');
+    return;
+  }
+
+  if (e.ctrlKey || e.metaKey) {
+    if (e.key === 's') { e.preventDefault(); exportPNG(); }
+    return;
+  }
+
+  switch (e.key) {
+    case 'r': case 'R':
+      if (loadedImage) { buildGrid(loadedImage); renderAscii(); } break;
+    case '+': case '=':
+      zoomLevel = Math.min(5, +(zoomLevel + 0.25).toFixed(2)); applyZoom(); break;
+    case '-':
+      zoomLevel = Math.max(0.25, +(zoomLevel - 0.25).toFixed(2)); applyZoom(); break;
+    case '0':
+      zoomLevel = 1; applyZoom(); break;
+  }
+});
 </script>
 </body>
 </html>
