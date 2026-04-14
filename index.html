@@ -11,6 +11,7 @@ body {
   background: #080810;
   display: flex;
   height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   font-family: monospace;
   color: #4af;
@@ -18,9 +19,10 @@ body {
 
 /* ── Sidebar ── */
 .sidebar {
-  width: 232px;
-  min-width: 232px;
+  width: 252px;
+  min-width: 252px;
   height: 100vh;
+  height: 100dvh;
   overflow-y: auto;
   overflow-x: hidden;
   background: #05050d;
@@ -33,7 +35,7 @@ body {
 }
 
 .sidebar-header {
-  padding: 18px 14px 14px;
+  padding: 20px 16px 16px;
   border-bottom: 1px solid #151528;
   display: flex;
   align-items: center;
@@ -42,7 +44,7 @@ body {
 }
 
 .sidebar-header h1 {
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 4px;
   text-transform: uppercase;
   opacity: 0.35;
@@ -65,14 +67,14 @@ body {
 
 .section {
   border-bottom: 1px solid #0e0e1e;
-  padding: 12px 14px;
+  padding: 13px 16px;
   display: flex;
   flex-direction: column;
-  gap: 9px;
+  gap: 10px;
 }
 
 .sec-title {
-  font-size: 8px;
+  font-size: 9px;
   letter-spacing: 3px;
   text-transform: uppercase;
   opacity: 0.25;
@@ -87,7 +89,7 @@ body {
 }
 
 .row > label {
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 1px;
   text-transform: uppercase;
   opacity: 0.45;
@@ -98,9 +100,9 @@ body {
 .rr { display: flex; align-items: center; gap: 5px; }
 
 .val {
-  font-size: 9px;
+  font-size: 10px;
   opacity: 0.35;
-  min-width: 22px;
+  min-width: 24px;
   text-align: right;
   flex-shrink: 0;
 }
@@ -108,7 +110,7 @@ body {
 input[type="file"] { display: none; }
 
 input[type="range"] {
-  width: 76px;
+  width: 84px;
   accent-color: #4af;
   cursor: pointer;
   flex-shrink: 0;
@@ -118,12 +120,12 @@ select {
   background: transparent;
   border: 1px solid #1a1a35;
   color: #4af;
-  padding: 4px 6px;
+  padding: 5px 7px;
   font-family: monospace;
-  font-size: 9px;
+  font-size: 10px;
   cursor: pointer;
   outline: none;
-  max-width: 118px;
+  max-width: 130px;
   box-sizing: border-box;
 }
 
@@ -141,11 +143,11 @@ button, .file-btn {
   border: 1px solid #4af;
   color: #4af;
   font-family: monospace;
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   cursor: pointer;
-  padding: 7px 0;
+  padding: 8px 0;
   width: 100%;
   text-align: center;
   display: block;
@@ -159,8 +161,8 @@ button:hover, .file-btn:hover { background: #4af; color: #05050d; }
 
 .btn-group button {
   flex: 1;
-  padding: 5px 0;
-  font-size: 8px;
+  padding: 6px 0;
+  font-size: 9px;
   letter-spacing: 1px;
   border-color: #1a1a35;
   color: #4af;
@@ -184,7 +186,7 @@ button:hover, .file-btn:hover { background: #4af; color: #05050d; }
 }
 
 .swatch-item span {
-  font-size: 7px; letter-spacing: 1px;
+  font-size: 8px; letter-spacing: 1px;
   opacity: 0.3; text-transform: uppercase;
 }
 
@@ -217,12 +219,12 @@ input[type="color"] {
 /* Checkbox */
 .check-row {
   display: flex; align-items: center; gap: 6px;
-  font-size: 9px; letter-spacing: 1px; opacity: 0.4;
+  font-size: 10px; letter-spacing: 1px; opacity: 0.4;
   cursor: pointer; text-transform: uppercase;
 }
 
 .check-row input[type="checkbox"] {
-  accent-color: #af4; width: 11px; height: 11px; cursor: pointer;
+  accent-color: #af4; width: 12px; height: 12px; cursor: pointer;
 }
 
 /* Zoom row */
@@ -236,7 +238,7 @@ input[type="color"] {
 
 .zoom-val {
   flex: 1; text-align: center;
-  font-size: 9px; opacity: 0.4;
+  font-size: 10px; opacity: 0.4;
 }
 
 #save-btn {
@@ -246,7 +248,7 @@ input[type="color"] {
   border-color: #af4;
   font-weight: 700;
   letter-spacing: 2px;
-  font-size: 10px;
+  font-size: 11px;
 }
 #save-btn:hover { background: #cff77a; border-color: #cff77a; color: #05050d; }
 
@@ -276,7 +278,7 @@ input[type="color"] {
 .menu-btn:hover { background: transparent !important; border-color: #4af !important; }
 
 .topbar h1 {
-  font-size: 10px; letter-spacing: 3px;
+  font-size: 11px; letter-spacing: 3px;
   text-transform: uppercase; opacity: 0.3;
 }
 
@@ -308,8 +310,8 @@ input[type="color"] {
 }
 
 .hint {
-  flex-shrink: 0; padding: 7px 14px;
-  font-size: 8px; letter-spacing: 2px;
+  flex-shrink: 0; padding: 8px 16px;
+  font-size: 9px; letter-spacing: 2px;
   opacity: 0.15; text-transform: uppercase;
   text-align: center;
   border-top: 1px solid #0e0e1e;
@@ -324,20 +326,56 @@ input[type="color"] {
 
 /* ── Responsive ── */
 @media (max-width: 680px) {
+  body { overflow: hidden; height: 100dvh; }
+
   .sidebar {
     position: fixed; top: 0; left: 0;
+    height: 100dvh;
     transform: translateX(-100%);
-    z-index: 100; width: min(280px, 86vw); min-width: 0;
+    z-index: 100;
+    width: min(300px, 88vw);
+    min-width: 0;
   }
   .sidebar.open { transform: translateX(0); }
   .sidebar-overlay.open { display: block; }
   .sidebar-close { display: block; }
+
   .topbar { display: flex; }
-  .ascii-scroll { padding: 10px; }
-  .hint { font-size: 7px; padding: 6px 10px; }
-  input[type="range"] { width: 90px; }
-  .zoom-row button { width: 36px; height: 36px; font-size: 18px; }
-  button, .file-btn { padding: 10px 0; font-size: 10px; }
+
+  /* Main fills exactly the remaining vertical space */
+  .main {
+    width: 100vw;
+    max-width: 100vw;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .ascii-scroll {
+    flex: 1;
+    overflow: auto;
+    padding: 12px;
+    /* prevent content from pushing body wider */
+    max-width: 100vw;
+  }
+
+  .hint { font-size: 8px; padding: 6px 10px; }
+
+  input[type="range"] { width: 100px; }
+
+  /* Bigger touch targets */
+  .zoom-row button { width: 40px; height: 40px; font-size: 20px; }
+  button, .file-btn { padding: 11px 0; font-size: 11px; }
+  .btn-group button { padding: 9px 0; font-size: 10px; }
+
+  /* GIF modal full-width, properly scrollable */
+  .modal-box {
+    width: 96vw;
+    max-height: 92dvh;
+    padding: 16px;
+  }
+  .gif-modes { grid-template-columns: 1fr; }
 }
 
 /* ── GIF Modal ── */
@@ -358,7 +396,7 @@ input[type="color"] {
 }
 
 .modal-box h2 {
-  font-size: 10px; letter-spacing: 4px;
+  font-size: 11px; letter-spacing: 4px;
   text-transform: uppercase; color: #f4a; opacity: 0.8;
 }
 
@@ -382,46 +420,52 @@ input[type="color"] {
 }
 
 .gif-mode h3 {
-  font-size: 8px; letter-spacing: 3px;
+  font-size: 9px; letter-spacing: 3px;
   text-transform: uppercase; color: #f4a;
 }
 
 .gif-mode p {
-  font-size: 8px; opacity: 0.3;
+  font-size: 9px; opacity: 0.3;
   letter-spacing: 1px; line-height: 1.5;
 }
 
-.gif-mode .row > label { font-size: 8px; opacity: 0.5; }
-.gif-mode input[type="range"] { width: 68px; }
+.gif-mode .row > label { font-size: 9px; opacity: 0.5; }
+.gif-mode input[type="range"] { width: 72px; }
 
 .gif-check {
   display: flex; align-items: center; gap: 5px;
-  font-size: 8px; letter-spacing: 1px; opacity: 0.5;
+  font-size: 9px; letter-spacing: 1px; opacity: 0.5;
   cursor: pointer; text-transform: uppercase;
 }
 .gif-check input[type="checkbox"] {
-  accent-color: #f4a; width: 10px; height: 10px; cursor: pointer;
+  accent-color: #f4a; width: 11px; height: 11px; cursor: pointer;
 }
 .gif-checks { display: flex; gap: 10px; flex-wrap: wrap; }
 
 .gif-gen-btn {
   border-color: #f4a !important; color: #f4a !important;
-  margin-top: 2px; font-size: 8px !important;
+  margin-top: 2px; font-size: 9px !important;
 }
 
 .gif-gen-btn:hover { background: #f4a !important; color: #0a0a18 !important; }
 
-.gif-progress { display: none; flex-direction: column; gap: 6px; }
+.gif-progress {
+  display: none; flex-direction: column; gap: 6px;
+  position: sticky; top: 0; z-index: 10;
+  background: #0a0a18;
+  padding: 8px 0;
+  border-bottom: 1px solid #1c1c2e;
+}
 .gif-progress.visible { display: flex; }
 
 .progress-track { width: 100%; height: 2px; background: #1c1c2e; }
 .progress-fill { height: 2px; background: #f4a; width: 0%; transition: width 0.1s; }
-.progress-text { font-size: 8px; letter-spacing: 2px; opacity: 0.35; text-transform: uppercase; }
+.progress-text { font-size: 9px; letter-spacing: 2px; opacity: 0.35; text-transform: uppercase; }
 
 .modal-close {
   align-self: flex-end; width: auto !important;
   border-color: #2a2a40 !important; color: #444 !important;
-  padding: 5px 14px; font-size: 8px !important; letter-spacing: 2px;
+  padding: 6px 16px; font-size: 9px !important; letter-spacing: 2px;
 }
 
 .modal-close:hover {
@@ -497,6 +541,7 @@ input[type="color"] {
     <div style="display:flex;gap:4px">
       <button id="webcam-btn" style="flex:1">Webcam</button>
       <button id="webcam-snap-btn" style="flex:1;display:none;border-color:#af4;color:#af4">Snap</button>
+      <button id="webcam-flip-btn" style="display:none;padding:5px 8px" title="Mirror">⇆</button>
     </div>
   </div>
 
@@ -681,6 +726,10 @@ input[type="color"] {
 <div class="modal-overlay" id="gif-modal">
   <div class="modal-box">
     <h2>Export GIF</h2>
+    <div class="gif-progress" id="gif-progress">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+      <p class="progress-text" id="progress-text">Preparing…</p>
+    </div>
     <div class="gif-modes">
       <div class="gif-mode">
         <h3>Threshold Sweep</h3>
@@ -802,29 +851,52 @@ input[type="color"] {
       <div class="gif-mode">
         <h3>Reveal</h3>
         <canvas class="gif-preview" id="reveal-gif-preview"></canvas>
-        <p>Cursor sweeps around, image appears under it.</p>
+        <p>Chars appear with scramble effect, always completes.</p>
         <div class="row">
-          <label>Frames</label>
+          <label>Speed</label>
           <div class="rr">
-            <input type="range" id="reveal-gif-frames" min="20" max="80" value="40" step="5">
-            <span class="val" id="reveal-gif-frames-val">40</span>
+            <input type="range" id="reveal-gif-frames" min="10" max="60" value="30" step="5">
+            <span class="val" id="reveal-gif-frames-val">30</span>
           </div>
         </div>
         <div class="row">
           <label>Delay ms</label>
           <div class="rr">
-            <input type="range" id="reveal-gif-delay" min="30" max="150" value="60" step="10">
-            <span class="val" id="reveal-gif-delay-val">60</span>
+            <input type="range" id="reveal-gif-delay" min="20" max="120" value="50" step="5">
+            <span class="val" id="reveal-gif-delay-val">50</span>
           </div>
+        </div>
+        <div class="gif-checks">
+          <label class="gif-check"><input type="checkbox" id="reveal-gif-loop"> Loop</label>
         </div>
         <button class="gif-gen-btn" id="gif-reveal-btn">Generate</button>
       </div>
       <div class="gif-mode">
-        <h3>Plain</h3>
-        <canvas class="gif-preview" id="plain-gif-preview"></canvas>
-        <p>Random chars appear with no cursor or effect.</p>
+        <h3>No Effect</h3>
+        <canvas class="gif-preview" id="noeff-gif-preview"></canvas>
+        <p>Records live frames — great for webcam.</p>
         <div class="row">
-          <label>Frames</label>
+          <label>Duration s</label>
+          <div class="rr">
+            <input type="range" id="noeff-dur" min="1" max="15" value="3" step="1">
+            <span class="val" id="noeff-dur-val">3</span>
+          </div>
+        </div>
+        <div class="row">
+          <label>FPS</label>
+          <div class="rr">
+            <input type="range" id="noeff-fps" min="5" max="20" value="10" step="1">
+            <span class="val" id="noeff-fps-val">10</span>
+          </div>
+        </div>
+        <button class="gif-gen-btn" id="gif-noeff-btn">Record</button>
+      </div>
+      <div class="gif-mode">
+        <h3>Cursor</h3>
+        <canvas class="gif-preview" id="plain-gif-preview"></canvas>
+        <p>Cursor moves randomly, image reveals under it.</p>
+        <div class="row">
+          <label>Steps</label>
           <div class="rr">
             <input type="range" id="plain-gif-frames" min="20" max="80" value="40" step="5">
             <span class="val" id="plain-gif-frames-val">40</span>
@@ -833,16 +905,15 @@ input[type="color"] {
         <div class="row">
           <label>Delay ms</label>
           <div class="rr">
-            <input type="range" id="plain-gif-delay" min="30" max="200" value="80" step="10">
-            <span class="val" id="plain-gif-delay-val">80</span>
+            <input type="range" id="plain-gif-delay" min="20" max="120" value="60" step="5">
+            <span class="val" id="plain-gif-delay-val">60</span>
           </div>
+        </div>
+        <div class="gif-checks">
+          <label class="gif-check"><input type="checkbox" id="plain-gif-loop"> Loop</label>
         </div>
         <button class="gif-gen-btn" id="gif-plain-btn">Generate</button>
       </div>
-    </div>
-    <div class="gif-progress" id="gif-progress">
-      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
-      <p class="progress-text" id="progress-text">Preparing…</p>
     </div>
     <button class="modal-close" id="gif-modal-close">Close</button>
   </div>
@@ -1432,6 +1503,21 @@ function clearScramble() {
 let hoverMode = 'scramble';
 let revealedSet = new Set();
 let autoRevealRaf = null;
+let lastRevealCX = null, lastRevealCY = null;
+
+function paintRevealAt(px, py) {
+  const r = hoverRadius;
+  for (let ddy = -r; ddy <= r; ddy++) for (let ddx = -r; ddx <= r; ddx++) {
+    if (ddx*ddx + ddy*ddy > r*r) continue;
+    const nx = px+ddx, ny = py+ddy;
+    if (nx < 0 || ny < 0 || nx >= cols || ny >= rows) continue;
+    const idx = ny*cols+nx;
+    if (grid[idx].original === ' ') continue;
+    if (revealedSet.has(idx)) continue;
+    revealedSet.add(idx);
+    scramblingCells.set(idx, { frames: Math.floor(8 + Math.random() * 12), elapsed: 0 });
+  }
+}
 
 function spawnReveal(clientX, clientY) {
   if (!isRendered) return;
@@ -1439,17 +1525,23 @@ function spawnReveal(clientX, clientY) {
   const rect = asciiEl.getBoundingClientRect();
   const cx = Math.floor((clientX - rect.left) / zoomLevel / charW);
   const cy = Math.floor((clientY - rect.top)  / zoomLevel / charH);
-  const r = hoverRadius;
-  for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
-    if (dx*dx + dy*dy > r*r) continue;
-    const nx = cx+dx, ny = cy+dy;
-    if (nx < 0 || ny < 0 || nx >= cols || ny >= rows) continue;
-    const idx = ny*cols+nx;
-    if (grid[idx].original === ' ') continue;
-    revealedSet.add(idx); // permanently reveal
-    if (!scramblingCells.has(idx))
-      scramblingCells.set(idx, { frames: Math.floor(6 + Math.random() * 10), elapsed: 0 });
+
+  // Interpolate from previous position via Bresenham line for smooth stroke
+  const x0 = lastRevealCX !== null ? lastRevealCX : cx;
+  const y0 = lastRevealCY !== null ? lastRevealCY : cy;
+  lastRevealCX = cx; lastRevealCY = cy;
+
+  const adx = Math.abs(cx - x0), ady = Math.abs(cy - y0);
+  const sx = cx >= x0 ? 1 : -1, sy = cy >= y0 ? 1 : -1;
+  let ex = x0, ey = y0, err = adx - ady;
+  while (true) {
+    paintRevealAt(ex, ey);
+    if (ex === cx && ey === cy) break;
+    const e2 = 2 * err;
+    if (e2 > -ady) { err -= ady; ex += sx; }
+    if (e2 <  adx) { err += adx; ey += sy; }
   }
+
   if (!animFrame) tick();
 }
 
@@ -1459,7 +1551,11 @@ function stopAutoReveal() {
 
 function resetReveal() {
   stopAutoReveal();
+  scramblingCells.forEach((_, idx) => { grid[idx].char = grid[idx].original; });
+  scramblingCells.clear();
+  if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
   revealedSet.clear();
+  lastRevealCX = lastRevealCY = null;
   if (isRendered) renderAscii();
 }
 
@@ -1490,12 +1586,26 @@ document.getElementById('auto-reveal-btn').addEventListener('click', () => {
   const dur = +document.getElementById('auto-reveal-dur').value * 1000;
   const t0 = performance.now();
   let idx = 0;
+  function revealBatch(from, to) {
+    for (let k = from; k < to; k++) {
+      revealedSet.add(pos[k]);
+      if (!scramblingCells.has(pos[k]))
+        scramblingCells.set(pos[k], { frames: Math.floor(8 + Math.random() * 12), elapsed: 0 });
+    }
+  }
   function step(ts) {
     const t = Math.min(1, (ts - t0) / dur);
     const target = Math.floor(t * pos.length);
-    while (idx < target) revealedSet.add(pos[idx++]);
-    renderAscii();
-    if (t < 1) autoRevealRaf = requestAnimationFrame(step);
+    if (target > idx) { revealBatch(idx, target); idx = target; }
+    if (t >= 1 && idx < pos.length) revealBatch(idx, pos.length);
+    if (!animFrame) tick();
+    if (t < 1 || scramblingCells.size > 0) {
+      autoRevealRaf = requestAnimationFrame(step);
+    } else {
+      // All chars added AND all scrambling done — force final complete render
+      for (const i of pos) { revealedSet.add(i); grid[i].char = grid[i].original; }
+      renderAscii();
+    }
   }
   autoRevealRaf = requestAnimationFrame(step);
 });
@@ -1505,15 +1615,18 @@ wrapper.addEventListener('mousemove', e => {
   if (hoverMode === 'scramble') spawnScramble(e.clientX, e.clientY);
   else if (hoverMode === 'reveal') spawnReveal(e.clientX, e.clientY);
 });
-wrapper.addEventListener('mouseleave', () => { if (hoverMode === 'scramble') clearScramble(); });
+wrapper.addEventListener('mouseleave', () => {
+  if (hoverMode === 'scramble') clearScramble();
+  lastRevealCX = lastRevealCY = null; // break stroke continuity when cursor leaves
+});
 
 // Touch
 wrapper.addEventListener('touchmove', e => {
   if (hoverMode === 'scramble') spawnScramble(e.touches[0].clientX, e.touches[0].clientY);
   else if (hoverMode === 'reveal') spawnReveal(e.touches[0].clientX, e.touches[0].clientY);
 }, { passive: true });
-wrapper.addEventListener('touchend',    () => { if (hoverMode === 'scramble') clearScramble(); });
-wrapper.addEventListener('touchcancel', () => { if (hoverMode === 'scramble') clearScramble(); });
+wrapper.addEventListener('touchend',    () => { if (hoverMode === 'scramble') clearScramble(); lastRevealCX = lastRevealCY = null; });
+wrapper.addEventListener('touchcancel', () => { if (hoverMode === 'scramble') clearScramble(); lastRevealCX = lastRevealCY = null; });
 
 // Adapt hint text for touch devices
 if (window.matchMedia('(hover: none)').matches) {
@@ -1527,6 +1640,7 @@ function drawCell(idx) {
   // Clear cell
   asciiCtx.fillStyle = bgColor;
   asciiCtx.fillRect(x * cw, y * ch, cw + 1, ch + 1);
+  if (hoverMode === 'reveal' && !revealedSet.has(idx)) return;
   if (!cell.char || cell.char === ' ') return;
   if (colorMode === 'color')       asciiCtx.fillStyle = `rgb(${cell.r},${cell.g},${cell.b})`;
   else if (colorMode === 'bw') {
@@ -1593,10 +1707,12 @@ function startAllGifPreviews() {
   startWavePreview();
   startRevealGifPreview();
   startPlainGifPreview();
+  startNoEffectPreview();
 }
 function closeGifModal() {
   document.getElementById('gif-modal').classList.remove('open');
   stopGifPreviews();
+  stopNoeffRecording();
 }
 document.getElementById('gif-modal-close').addEventListener('click', closeGifModal);
 document.getElementById('gif-modal').addEventListener('click', e => {
@@ -1688,8 +1804,10 @@ function renderGridToIndexed(oc, ox, mode, bwThr, pal) {
   for (let y=0;y<rows;y++) for (let x=0;x<cols;x++) {
     const cell=grid[y*cols+x]; if (!cell.char||cell.char===' ') continue;
     if (mode==='bw') {
-      if ((0.299*cell.r+0.587*cell.g+0.114*cell.b) < bwThr) continue; // below threshold → invisible (bg shows)
-      ox.fillStyle = '#fff';
+      const lum = 0.299*cell.r+0.587*cell.g+0.114*cell.b;
+      if (lum < bwThr) continue;
+      const v = Math.round(lerpChannel(bwThr, 255, (lum - bwThr) / (255 - bwThr || 1)));
+      ox.fillStyle = `rgb(${v},${v},${v})`;
     } else if (mode==='color') {
       ox.fillStyle=`rgb(${cell.r},${cell.g},${cell.b})`;
     } else {
@@ -1988,8 +2106,9 @@ function renderToPreviewCanvas(cvs, cellChars, opts = {}) {
   pctx.fillRect(0, 0, W, H);
   pctx.font = `${fs}px "Courier New",monospace`;
   pctx.textBaseline = 'top';
-  const bwThr  = opts.bwThr  ?? +bwThreshold.value;
-  const fgOver = opts.color  ?? null;  // override fill color for all chars
+  const mode   = opts.mode  ?? colorMode;   // allow caller to override color mode
+  const bwThr  = opts.bwThr ?? +bwThreshold.value;
+  const fgOver = opts.color ?? null;
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
       const cell = grid[y*cols+x];
@@ -1997,16 +2116,16 @@ function renderToPreviewCanvas(cvs, cellChars, opts = {}) {
       if (!char || char === ' ') continue;
       if (fgOver) {
         pctx.fillStyle = fgOver;
-      } else if (colorMode === 'color') {
+      } else if (mode === 'color') {
         pctx.fillStyle = `rgb(${cell.r},${cell.g},${cell.b})`;
-      } else if (colorMode === 'bw') {
+      } else if (mode === 'bw') {
         const lum = 0.299*cell.r+0.587*cell.g+0.114*cell.b;
         if (lum < bwThr) continue;
         const v = Math.round(lerpChannel(bwThr,255,(lum-bwThr)/(255-bwThr||1)));
         pctx.fillStyle = `rgb(${v},${v},${v})`;
-      } else if (colorMode === 'duotone') {
+      } else if (mode === 'duotone') {
         pctx.fillStyle = getDuotoneColor(cell);
-      } else if (colorMode === 'edge') {
+      } else if (mode === 'edge') {
         const mag = cell.edge||0; if (mag < 0.08) continue;
         pctx.fillStyle = `rgb(${Math.round(mag*255)},${Math.round(mag*255)},${Math.round(mag*255)})`;
       } else {
@@ -2027,7 +2146,7 @@ function startThresholdPreview() {
   function tick(ts) {
     if (ts - last >= delay) {
       last = ts;
-      renderToPreviewCanvas(cvs, null, { bwThr: thr });
+      renderToPreviewCanvas(cvs, null, { mode: 'bw', bwThr: thr });
       thr += dir * Math.round(255 / 32);
       if (thr <= 0)   { thr = 0;   dir =  1; }
       if (thr >= 255) { thr = 255; dir = -1; }
@@ -2163,65 +2282,172 @@ function startWavePreview() {
   wavePreviewRaf = requestAnimationFrame(tick);
 }
 
-// ── GIF: Reveal (cursor sweep) ────────────────────────────────────────────
+// ── GIF: Reveal ───────────────────────────────────────────────────────────
 async function generateRevealGIF() {
   if (!isRendered) return;
-  const n    = +document.getElementById('reveal-gif-frames').value;
-  const d    = +document.getElementById('reveal-gif-delay').value;
-  const r    = hoverRadius;
-  const mode = colorMode;
+  const speed  = +document.getElementById('reveal-gif-frames').value;
+  const d      = +document.getElementById('reveal-gif-delay').value;
+  const doLoop = document.getElementById('reveal-gif-loop').checked;
+  const SC     = 3; // scramble frames per char
+  const HOLD   = 4; // hold frames at full / blank
+  const mode   = colorMode;
   const { W, H } = gifCanvasSize();
   const pal  = buildPalette(mode);
   const oc   = document.createElement('canvas'), ox = oc.getContext('2d');
   const orig = grid.map(c => c.char);
-  const revealed = new Set();
-  const frames = [];
-  let cx = Math.floor(cols / 2), cy = Math.floor(rows / 2);
-  for (let f = 0; f < n; f++) {
-    cx = Math.max(0, Math.min(cols-1, cx + Math.round((Math.random()-0.5) * cols * 0.35)));
-    cy = Math.max(0, Math.min(rows-1, cy + Math.round((Math.random()-0.5) * rows * 0.35)));
-    for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
-      if (dx*dx + dy*dy > r*r) continue;
-      const nx = cx+dx, ny = cy+dy;
-      if (nx >= 0 && ny >= 0 && nx < cols && ny < rows) revealed.add(ny*cols+nx);
+
+  const pos = [];
+  for (let i = 0; i < orig.length; i++) if (orig[i] && orig[i] !== ' ') pos.push(i);
+  for (let i = pos.length-1; i > 0; i--) { const j=Math.floor(Math.random()*(i+1)); [pos[i],pos[j]]=[pos[j],pos[i]]; }
+
+  const batch    = Math.max(1, Math.ceil(pos.length / speed));
+  // charRevealF[k] = first typing frame for char k
+  const charRevealF = pos.map((_, k) => Math.floor(k / batch));
+  const revealEnd   = speed + SC; // all chars settled after this frame
+  const totalF      = doLoop
+    ? revealEnd + HOLD + revealEnd + HOLD
+    : revealEnd + HOLD;
+
+  const frames = [], delays = [];
+
+  for (let f = 0; f < totalF; f++) {
+    for (let i = 0; i < orig.length; i++) grid[i].char = ' ';
+
+    let phase, pf;
+    if      (f < revealEnd)                    { phase = 'reveal'; pf = f; }
+    else if (f < revealEnd + HOLD)             { phase = 'hold';   pf = 0; }
+    else if (f < revealEnd*2 + HOLD)           { phase = 'erase';  pf = f - revealEnd - HOLD; }
+    else                                       { phase = 'blank';  pf = 0; }
+
+    for (let k = 0; k < pos.length; k++) {
+      const i = pos[k];
+      const rf = charRevealF[k];
+      if (phase === 'hold') {
+        grid[i].char = orig[i];
+      } else if (phase === 'reveal') {
+        if (pf < rf) continue;
+        grid[i].char = pf < rf + SC
+          ? SCRAMBLE_CHARS[Math.floor(Math.random()*SCRAMBLE_CHARS.length)]
+          : orig[i];
+      } else if (phase === 'erase') {
+        const ef = speed - 1 - rf; // reverse order
+        if (pf < ef)      grid[i].char = orig[i];
+        else if (pf < ef+SC) grid[i].char = SCRAMBLE_CHARS[Math.floor(Math.random()*SCRAMBLE_CHARS.length)];
+        // else: space (erased)
+      }
     }
-    for (let i = 0; i < orig.length; i++) grid[i].char = revealed.has(i) ? orig[i] : ' ';
+
     frames.push(renderGridToIndexed(oc, ox, mode, +bwThreshold.value, pal));
+    delays.push(phase === 'hold' || phase === 'blank' ? d * 5 : d);
     grid.forEach((c, i) => { c.char = orig[i]; });
-    setProgress((f+1)/n, `Frame ${f+1} / ${n}…`);
+    setProgress((f+1)/totalF, `Frame ${f+1} / ${totalF}…`);
     if (f % 4 === 0) await yieldUI();
   }
+
   setProgress(1, 'Encoding…'); await yieldUI();
-  downloadGIF(encodeGIF(frames, W, H, pal, d), 'ascii-reveal.gif');
+  downloadGIF(encodeGIFVar(frames, W, H, pal, delays), 'ascii-reveal.gif');
   hideProgress();
 }
 
-// ── GIF: Plain reveal ─────────────────────────────────────────────────────
+// ── GIF: Cursor reveal ────────────────────────────────────────────────────
+function buildCursorPath(nSteps) {
+  const r = hoverRadius;
+  // Smooth cursor path via velocity + bounce
+  const path = [];
+  let cx = Math.random()*cols, cy = Math.random()*rows;
+  let vx = (Math.random()-.5)*4, vy = (Math.random()-.5)*4;
+  const maxSpd = Math.max(cols, rows) * 0.08;
+  for (let s = 0; s < nSteps; s++) {
+    vx += (Math.random()-.5)*1.5; vy += (Math.random()-.5)*1.5;
+    const spd = Math.sqrt(vx*vx+vy*vy);
+    if (spd > maxSpd) { vx=vx/spd*maxSpd; vy=vy/spd*maxSpd; }
+    cx+=vx; cy+=vy;
+    if (cx<0)      { cx=-cx;           vx=Math.abs(vx);  }
+    else if (cx>cols-1) { cx=2*(cols-1)-cx; vx=-Math.abs(vx); }
+    if (cy<0)      { cy=-cy;           vy=Math.abs(vy);  }
+    else if (cy>rows-1) { cy=2*(rows-1)-cy; vy=-Math.abs(vy); }
+    path.push({ x: Math.round(Math.max(0,Math.min(cols-1,cx))),
+                y: Math.round(Math.max(0,Math.min(rows-1,cy))) });
+  }
+
+  const cellStep = new Map();
+  const remaining = new Set();
+  for (let i = 0; i < grid.length; i++) if (grid[i].original && grid[i].original !== ' ') remaining.add(i);
+
+  // First pass: assign cells within radius as cursor passes
+  for (let s = 0; s < path.length; s++) {
+    const {x,y} = path[s];
+    for (let dy=-r; dy<=r; dy++) for (let dx=-r; dx<=r; dx++) {
+      if (dx*dx+dy*dy > r*r) continue;
+      const nx=x+dx, ny=y+dy;
+      if (nx>=0&&ny>=0&&nx<cols&&ny<rows) {
+        const idx=ny*cols+nx;
+        if (remaining.has(idx)) { cellStep.set(idx,s); remaining.delete(idx); }
+      }
+    }
+  }
+  // Second pass: remaining cells → nearest path point (no sudden burst)
+  for (const i of remaining) {
+    const gx=i%cols, gy=Math.floor(i/cols);
+    let best=0, bestD=Infinity;
+    for (let s=0; s<path.length; s++) {
+      const d=(path[s].x-gx)**2+(path[s].y-gy)**2;
+      if (d<bestD) { bestD=d; best=s; }
+    }
+    cellStep.set(i, best);
+  }
+  return cellStep;
+}
+
 async function generatePlainGIF() {
   if (!isRendered) return;
-  const n    = +document.getElementById('plain-gif-frames').value;
-  const d    = +document.getElementById('plain-gif-delay').value;
+  const nSteps = +document.getElementById('plain-gif-frames').value;
+  const d      = +document.getElementById('plain-gif-delay').value;
+  const doLoop = document.getElementById('plain-gif-loop').checked;
+  const SC=3, HOLD=4;
   const mode = colorMode;
   const { W, H } = gifCanvasSize();
   const pal  = buildPalette(mode);
   const oc   = document.createElement('canvas'), ox = oc.getContext('2d');
   const orig = grid.map(c => c.char);
-  const pos  = [];
-  for (let i = 0; i < orig.length; i++) if (orig[i] && orig[i] !== ' ') pos.push(i);
-  for (let i = pos.length-1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [pos[i],pos[j]]=[pos[j],pos[i]]; }
-  const perFrame = Math.ceil(pos.length / n);
-  const frames = [];
-  for (let f = 0; f < n; f++) {
-    const count = Math.min((f+1)*perFrame, pos.length);
+
+  const cellStep = buildCursorPath(nSteps);
+  const revealEnd = nSteps + SC;
+  const totalF = doLoop ? revealEnd*2 + HOLD*2 : revealEnd + HOLD;
+  const frames = [], delays = [];
+
+  for (let f = 0; f < totalF; f++) {
     for (let i = 0; i < orig.length; i++) grid[i].char = ' ';
-    for (let i = 0; i < count; i++) grid[pos[i]].char = orig[pos[i]];
+
+    let phase, pf;
+    if      (f < revealEnd)           { phase='reveal'; pf=f; }
+    else if (f < revealEnd+HOLD)      { phase='hold';   pf=0; }
+    else if (f < revealEnd*2+HOLD)    { phase='erase';  pf=f-revealEnd-HOLD; }
+    else                              { phase='blank';  pf=0; }
+
+    for (const [idx, rf] of cellStep) {
+      if (phase==='hold') { grid[idx].char = orig[idx]; }
+      else if (phase==='reveal') {
+        if (pf < rf) continue;
+        grid[idx].char = pf < rf+SC
+          ? SCRAMBLE_CHARS[Math.floor(Math.random()*SCRAMBLE_CHARS.length)]
+          : orig[idx];
+      } else if (phase==='erase') {
+        const ef = nSteps-1-rf;
+        if      (pf < ef)    grid[idx].char = orig[idx];
+        else if (pf < ef+SC) grid[idx].char = SCRAMBLE_CHARS[Math.floor(Math.random()*SCRAMBLE_CHARS.length)];
+      }
+    }
+
     frames.push(renderGridToIndexed(oc, ox, mode, +bwThreshold.value, pal));
-    grid.forEach((c, i) => { c.char = orig[i]; });
-    setProgress((f+1)/n, `Frame ${f+1} / ${n}…`);
-    if (f % 4 === 0) await yieldUI();
+    delays.push(phase==='hold'||phase==='blank' ? d*5 : d);
+    grid.forEach((c,i) => { c.char = orig[i]; });
+    setProgress((f+1)/totalF, `Frame ${f+1} / ${totalF}…`);
+    if (f%4===0) await yieldUI();
   }
-  setProgress(1, 'Encoding…'); await yieldUI();
-  downloadGIF(encodeGIF(frames, W, H, pal, d), 'ascii-plain.gif');
+
+  setProgress(1,'Encoding…'); await yieldUI();
+  downloadGIF(encodeGIFVar(frames, W, H, pal, delays), 'ascii-cursor.gif');
   hideProgress();
 }
 
@@ -2230,22 +2456,47 @@ function startRevealGifPreview() {
   const cvs = document.getElementById('reveal-gif-preview');
   if (!cvs || !isRendered) return;
   const chars = grid.map(c => c.char);
-  const total = chars.filter(c => c && c !== ' ').length;
-  const revealed = new Set();
-  let cx = Math.floor(cols/2), cy = Math.floor(rows/2), last = 0;
+  const pos = [];
+  for (let i = 0; i < chars.length; i++) if (chars[i] && chars[i] !== ' ') pos.push(i);
+  for (let i = pos.length-1; i > 0; i--) { const j=Math.floor(Math.random()*(i+1)); [pos[i],pos[j]]=[pos[j],pos[i]]; }
+
+  const SC = 3, HOLD = 4;
+  let frame = 0, last = 0;
+
   function tick(ts) {
-    if (ts - last >= 80) {
+    if (ts - last >= 50) {
       last = ts;
-      cx = Math.max(0, Math.min(cols-1, cx + Math.round((Math.random()-.5)*cols*.35)));
-      cy = Math.max(0, Math.min(rows-1, cy + Math.round((Math.random()-.5)*rows*.35)));
-      const r = hoverRadius;
-      for (let dy=-r; dy<=r; dy++) for (let dx=-r; dx<=r; dx++) {
-        if (dx*dx+dy*dy > r*r) continue;
-        const nx=cx+dx, ny=cy+dy;
-        if (nx>=0&&ny>=0&&nx<cols&&ny<rows) revealed.add(ny*cols+nx);
+      const speed   = +document.getElementById('reveal-gif-frames').value;
+      const doLoop  = document.getElementById('reveal-gif-loop').checked;
+      const batch   = Math.max(1, Math.ceil(pos.length / speed));
+      const revealEnd = speed + SC;
+      const totalF  = doLoop ? revealEnd*2 + HOLD*2 : revealEnd + HOLD;
+
+      frame = (frame + 1) % totalF;
+
+      let phase, pf;
+      if      (frame < revealEnd)              { phase='reveal'; pf=frame; }
+      else if (frame < revealEnd+HOLD)         { phase='hold';   pf=0; }
+      else if (frame < revealEnd*2+HOLD)       { phase='erase';  pf=frame-revealEnd-HOLD; }
+      else                                     { phase='blank';  pf=0; }
+
+      const fc = new Array(chars.length).fill(' ');
+      for (let k = 0; k < pos.length; k++) {
+        const i = pos[k];
+        const rf = Math.floor(k / batch);
+        if (phase === 'hold') {
+          fc[i] = chars[i];
+        } else if (phase === 'reveal') {
+          if (pf < rf) continue;
+          fc[i] = pf < rf+SC
+            ? SCRAMBLE_CHARS[Math.floor(Math.random()*SCRAMBLE_CHARS.length)]
+            : chars[i];
+        } else if (phase === 'erase') {
+          const ef = speed-1-rf;
+          if      (pf < ef)    fc[i] = chars[i];
+          else if (pf < ef+SC) fc[i] = SCRAMBLE_CHARS[Math.floor(Math.random()*SCRAMBLE_CHARS.length)];
+        }
       }
-      if (revealed.size >= total) revealed.clear();
-      const fc = chars.map((c,i) => revealed.has(i) ? c : ' ');
       renderToPreviewCanvas(cvs, fc);
     }
     revealGifRaf = requestAnimationFrame(tick);
@@ -2253,24 +2504,52 @@ function startRevealGifPreview() {
   revealGifRaf = requestAnimationFrame(tick);
 }
 
-// ── Preview: Plain ────────────────────────────────────────────────────────
+// ── Preview: Cursor ───────────────────────────────────────────────────────
 function startPlainGifPreview() {
   const cvs = document.getElementById('plain-gif-preview');
   if (!cvs || !isRendered) return;
   const chars = grid.map(c => c.char);
-  const pos = [];
-  for (let i = 0; i < chars.length; i++) if (chars[i] && chars[i] !== ' ') pos.push(i);
-  const shuffle = () => { for (let i=pos.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pos[i],pos[j]]=[pos[j],pos[i]];} };
-  shuffle();
-  const step = Math.max(1, Math.ceil(pos.length / 50));
-  let idx = 0, last = 0;
+  const SC=3, HOLD=4;
+  let frame=0, last=0;
+  let cellStep=null, nSteps=0;
+
+  function rebuildPath() {
+    nSteps  = +document.getElementById('plain-gif-frames').value;
+    cellStep = buildCursorPath(nSteps);
+    frame   = 0;
+  }
+  rebuildPath();
+
   function tick(ts) {
-    if (ts - last >= 60) {
+    if (ts - last >= 50) {
       last = ts;
-      idx = Math.min(idx + step, pos.length);
-      if (idx >= pos.length) { idx = 0; shuffle(); }
+      const doLoop   = document.getElementById('plain-gif-loop').checked;
+      const revealEnd = nSteps + SC;
+      const totalF   = doLoop ? revealEnd*2+HOLD*2 : revealEnd+HOLD;
+
+      frame++;
+      if (frame >= totalF) rebuildPath();
+
+      let phase, pf;
+      if      (frame < revealEnd)        { phase='reveal'; pf=frame; }
+      else if (frame < revealEnd+HOLD)   { phase='hold';   pf=0; }
+      else if (frame < revealEnd*2+HOLD) { phase='erase';  pf=frame-revealEnd-HOLD; }
+      else                               { phase='blank';  pf=0; }
+
       const fc = new Array(chars.length).fill(' ');
-      for (let i = 0; i < idx; i++) fc[pos[i]] = chars[pos[i]];
+      for (const [idx, rf] of cellStep) {
+        if (phase==='hold') { fc[idx]=chars[idx]; }
+        else if (phase==='reveal') {
+          if (pf<rf) continue;
+          fc[idx] = pf<rf+SC
+            ? SCRAMBLE_CHARS[Math.floor(Math.random()*SCRAMBLE_CHARS.length)]
+            : chars[idx];
+        } else if (phase==='erase') {
+          const ef=nSteps-1-rf;
+          if      (pf<ef)    fc[idx]=chars[idx];
+          else if (pf<ef+SC) fc[idx]=SCRAMBLE_CHARS[Math.floor(Math.random()*SCRAMBLE_CHARS.length)];
+        }
+      }
       renderToPreviewCanvas(cvs, fc);
     }
     plainGifRaf = requestAnimationFrame(tick);
@@ -2282,6 +2561,86 @@ function stopGifPreviews() {
   [thPreviewRaf, scPreviewRaf, fadePreviewRaf, cyclePreviewRaf, wavePreviewRaf, revealGifRaf, plainGifRaf].forEach(r => r && cancelAnimationFrame(r));
   thPreviewRaf = scPreviewRaf = fadePreviewRaf = cyclePreviewRaf = wavePreviewRaf = revealGifRaf = plainGifRaf = null;
 }
+
+// ── GIF: No Effect (recording) ────────────────────────────────────────────
+let noeffRecording = false;
+let noeffInterval  = null;
+
+function startNoEffectPreview() {
+  if (!isRendered) return;
+  const cv = document.getElementById('noeff-gif-preview');
+  cv.width = asciiEl.width; cv.height = asciiEl.height;
+  cv.getContext('2d').drawImage(asciiEl, 0, 0);
+}
+
+// Capture current asciiEl as an indexed GIF frame (pixel-exact match with canvas)
+function captureCanvasFrame(pal) {
+  const W = asciiEl.width, H = asciiEl.height;
+  const tmp = document.createElement('canvas');
+  tmp.width = W; tmp.height = H;
+  tmp.getContext('2d').drawImage(asciiEl, 0, 0);
+  const d = tmp.getContext('2d').getImageData(0, 0, W, H).data;
+  const idx = new Uint8Array(W * H);
+  for (let i = 0; i < W * H; i++)
+    idx[i] = pxToIdx(d[i*4], d[i*4+1], d[i*4+2], colorMode, pal);
+  return { idx, W, H };
+}
+
+function stopNoeffRecording() {
+  if (noeffInterval) { clearInterval(noeffInterval); noeffInterval = null; }
+  noeffRecording = false;
+  document.getElementById('gif-noeff-btn').textContent = 'Record';
+}
+
+document.getElementById('gif-noeff-btn').addEventListener('click', () => {
+  if (noeffRecording) { stopNoeffRecording(); return; }
+  if (!isRendered) return;
+
+  const dur = +document.getElementById('noeff-dur').value;
+  const fps = +document.getElementById('noeff-fps').value;
+  const total = Math.round(dur * fps);
+  const delay = Math.round(1000 / fps);
+  const pal = buildPalette(colorMode);
+  const frames = [];
+  let captured = 0;
+  let W = 0, H = 0;
+
+  noeffRecording = true;
+  const btn = document.getElementById('gif-noeff-btn');
+  btn.textContent = 'Stop';
+
+  setProgress(0, `Recording 0 / ${total}`);
+
+  noeffInterval = setInterval(async () => {
+    // Capture directly from the visible canvas — pixel-exact match
+    const { idx, W: fw, H: fh } = captureCanvasFrame(pal);
+    if (W === 0) { W = fw; H = fh; }
+
+    // Mirror to preview
+    const cv = document.getElementById('noeff-gif-preview');
+    if (cv.width !== asciiEl.width || cv.height !== asciiEl.height) {
+      cv.width = asciiEl.width; cv.height = asciiEl.height;
+    }
+    cv.getContext('2d').drawImage(asciiEl, 0, 0);
+
+    frames.push(idx);
+    captured++;
+    setProgress(captured / total, `Recording ${captured} / ${total}`);
+
+    if (captured >= total) {
+      stopNoeffRecording();
+      setProgress(0.95, 'Encoding…');
+      await yieldUI();
+      const gif = encodeGIF(frames, W, H, pal, delay);
+      hideProgress();
+      downloadGIF(gif, 'ascii-record.gif');
+    }
+  }, delay);
+});
+
+[['noeff-dur','noeff-dur-val'],['noeff-fps','noeff-fps-val']].forEach(([id,vid]) =>
+  document.getElementById(id).addEventListener('input', () =>
+    document.getElementById(vid).textContent = document.getElementById(id).value));
 
 // ── URL State ─────────────────────────────────────────────────────────────
 function saveState() {
@@ -2355,7 +2714,7 @@ loadState();
 });
 
 // ── Webcam ────────────────────────────────────────────────────────────────
-let webcamStream = null, webcamRaf = null;
+let webcamStream = null, webcamRaf = null, webcamFlip = false;
 const webcamVideo = document.createElement('video');
 webcamVideo.playsInline = true; webcamVideo.muted = true;
 
@@ -2365,6 +2724,7 @@ function stopWebcam() {
   webcamVideo.srcObject = null;
   document.getElementById('webcam-btn').textContent = 'Webcam';
   document.getElementById('webcam-snap-btn').style.display = 'none';
+  document.getElementById('webcam-flip-btn').style.display = 'none';
 }
 
 function webcamTick() {
@@ -2373,7 +2733,15 @@ function webcamTick() {
     const c = +colsRange.value;
     const r = Math.round(c * webcamVideo.videoHeight / webcamVideo.videoWidth * aspectRatio);
     hiddenCvs.width = c; hiddenCvs.height = r;
-    ctx.drawImage(webcamVideo, 0, 0, c, r);
+    if (webcamFlip) {
+      ctx.save();
+      ctx.translate(c, 0);
+      ctx.scale(-1, 1);
+      ctx.drawImage(webcamVideo, 0, 0, c, r);
+      ctx.restore();
+    } else {
+      ctx.drawImage(webcamVideo, 0, 0, c, r);
+    }
     buildGridFromData(ctx.getImageData(0, 0, c, r).data, c, r);
     renderAscii();
   }
@@ -2388,6 +2756,7 @@ document.getElementById('webcam-btn').addEventListener('click', async () => {
     await webcamVideo.play();
     document.getElementById('webcam-btn').textContent = 'Stop';
     document.getElementById('webcam-snap-btn').style.display = '';
+    document.getElementById('webcam-flip-btn').style.display = '';
     isRendered = true;
     webcamTick();
   } catch(e) {
@@ -2398,6 +2767,13 @@ document.getElementById('webcam-btn').addEventListener('click', async () => {
 
 document.getElementById('webcam-snap-btn').addEventListener('click', () => {
   stopWebcam();
+});
+
+document.getElementById('webcam-flip-btn').addEventListener('click', () => {
+  webcamFlip = !webcamFlip;
+  const btn = document.getElementById('webcam-flip-btn');
+  btn.style.borderColor = webcamFlip ? '#af4' : '';
+  btn.style.color       = webcamFlip ? '#af4' : '';
 });
 
 // ── URL load ──────────────────────────────────────────────────────────────
