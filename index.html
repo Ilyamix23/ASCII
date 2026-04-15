@@ -4,302 +4,539 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ASCII Art</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,300;8..144,400;8..144,500;8..144,600;8..144,700&display=swap" rel="stylesheet">
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-body {
-  background: #080810;
-  display: flex;
-  height: 100vh;
-  height: 100dvh;
-  overflow: hidden;
-  font-family: monospace;
-  color: #4af;
+/* ── MD3 Color Tokens (dark, seed #0091D5) ── */
+:root {
+  --md-sys-color-primary: #8ECFED;
+  --md-sys-color-on-primary: #003549;
+  --md-sys-color-primary-container: #004D68;
+  --md-sys-color-on-primary-container: #C4E8F7;
+  --md-sys-color-secondary: #B3CAD6;
+  --md-sys-color-on-secondary: #1D333D;
+  --md-sys-color-secondary-container: #334A54;
+  --md-sys-color-on-secondary-container: #CDE6F2;
+  --md-sys-color-tertiary: #C2C2EA;
+  --md-sys-color-on-tertiary: #2B2D4D;
+  --md-sys-color-tertiary-container: #424465;
+  --md-sys-color-on-tertiary-container: #E2E0FF;
+  --md-sys-color-error: #FFB4AB;
+  --md-sys-color-on-error: #690005;
+  --md-sys-color-error-container: #93000A;
+  --md-sys-color-on-error-container: #FFDAD6;
+  --md-sys-color-surface: #0F1417;
+  --md-sys-color-on-surface: #DEE3E7;
+  --md-sys-color-on-surface-variant: #BEC7CB;
+  --md-sys-color-surface-container-lowest: #0A0F12;
+  --md-sys-color-surface-container-low: #171D20;
+  --md-sys-color-surface-container: #1B2124;
+  --md-sys-color-surface-container-high: #252B2E;
+  --md-sys-color-surface-container-highest: #303639;
+  --md-sys-color-outline: #8A9397;
+  --md-sys-color-outline-variant: #3E474B;
+  --md-sys-color-inverse-surface: #DEE3E7;
+  --md-sys-color-inverse-on-surface: #2B3033;
+  --md-sys-color-inverse-primary: #0069A0;
+
+  /* Shape */
+  --md-sys-shape-corner-none: 0px;
+  --md-sys-shape-corner-extra-small: 4px;
+  --md-sys-shape-corner-small: 8px;
+  --md-sys-shape-corner-medium: 12px;
+  --md-sys-shape-corner-large: 16px;
+  --md-sys-shape-corner-extra-large: 28px;
+  --md-sys-shape-corner-full: 9999px;
 }
 
-/* ── Sidebar ── */
-.sidebar {
-  width: 252px;
-  min-width: 252px;
-  height: 100vh;
+/* ── Base ── */
+body {
+  display: flex;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--md-sys-color-surface);
+  font-family: 'Roboto Flex', sans-serif;
+  color: var(--md-sys-color-on-surface);
+}
+
+/* ── Navigation Drawer / Sidebar ── */
+#sidebar {
+  width: 280px;
+  min-width: 280px;
   height: 100dvh;
   overflow-y: auto;
   overflow-x: hidden;
-  background: #05050d;
-  border-right: 1px solid #151528;
+  background: var(--md-sys-color-surface-container);
+  border-right: 1px solid var(--md-sys-color-outline-variant);
   display: flex;
   flex-direction: column;
   scrollbar-width: thin;
-  scrollbar-color: #1a1a30 transparent;
-  transition: transform 0.25s ease;
+  scrollbar-color: var(--md-sys-color-outline-variant) transparent;
+  transition: transform 0.3s cubic-bezier(0.05,0.7,0.1,1);
+  flex-shrink: 0;
 }
 
-.sidebar-header {
+/* ── Drawer header ── */
+.drawer-header {
   padding: 20px 16px 16px;
-  border-bottom: 1px solid #151528;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-shrink: 0;
 }
 
-.sidebar-header h1 {
-  font-size: 11px;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  opacity: 0.35;
-}
-
-.sidebar-close {
-  display: none;
-  background: none !important;
-  border: none !important;
-  color: #4af !important;
+.drawer-logo {
   font-size: 16px;
-  cursor: pointer;
-  padding: 0 !important;
-  width: auto !important;
-  opacity: 0.4;
-  letter-spacing: 0 !important;
-}
-
-.sidebar-close:hover { opacity: 1; background: none !important; color: #4af !important; }
-
-.section {
-  border-bottom: 1px solid #0e0e1e;
-  padding: 13px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.sec-title {
-  font-size: 9px;
+  font-weight: 600;
   letter-spacing: 3px;
   text-transform: uppercase;
-  opacity: 0.25;
-  margin-bottom: 1px;
+  color: var(--md-sys-color-primary);
 }
 
+/* ── Section ── */
+.section {
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.section-title {
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--md-sys-color-outline-variant);
+  opacity: 0.8;
+  margin-bottom: 2px;
+  font-weight: 500;
+}
+
+/* ── Row layout ── */
 .row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 6px;
+  gap: 8px;
 }
 
 .row > label {
-  font-size: 10px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  opacity: 0.45;
+  font-size: 12px;
+  color: var(--md-sys-color-on-surface-variant);
+  letter-spacing: 0.4px;
   white-space: nowrap;
   flex-shrink: 0;
 }
 
-.rr { display: flex; align-items: center; gap: 5px; }
+.rr { display: flex; align-items: center; gap: 6px; }
 
 .val {
-  font-size: 10px;
-  opacity: 0.35;
-  min-width: 24px;
+  font-size: 12px;
+  color: var(--md-sys-color-on-surface-variant);
+  min-width: 28px;
   text-align: right;
+  opacity: 0.7;
   flex-shrink: 0;
 }
 
-input[type="file"] { display: none; }
+/* ── Buttons ── */
+button, .file-upload-btn {
+  font-family: 'Roboto Flex', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+  cursor: pointer;
+  border: none;
+  border-radius: var(--md-sys-shape-corner-full);
+  padding: 10px 24px;
+  text-align: center;
+  display: inline-block;
+  transition: background 200ms, filter 150ms, box-shadow 150ms;
+  text-decoration: none;
+  line-height: 1.2;
+  white-space: nowrap;
+}
 
+/* Filled button */
+.btn-filled {
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+  border: none;
+}
+.btn-filled:hover { filter: brightness(1.1); box-shadow: 0 1px 6px rgba(0,0,0,0.3); }
+
+/* Tonal button */
+.btn-tonal {
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+  border: none;
+}
+.btn-tonal:hover { filter: brightness(1.12); }
+
+/* Outlined button */
+.btn-outlined {
+  background: transparent;
+  border: 1px solid var(--md-sys-color-outline);
+  color: var(--md-sys-color-on-surface-variant);
+}
+.btn-outlined:hover { background: var(--md-sys-color-surface-container-high); }
+
+/* Icon button */
+.btn-icon {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: var(--md-sys-shape-corner-full);
+  background: transparent;
+  border: none;
+  color: var(--md-sys-color-on-surface-variant);
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 150ms;
+}
+.btn-icon:hover { background: var(--md-sys-color-surface-container-high); }
+
+/* Sidebar close — icon button, only on mobile */
+.sidebar-close {
+  display: none;
+}
+
+/* Save button */
+#save-btn {
+  width: 100%;
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 12px 24px;
+  border-radius: var(--md-sys-shape-corner-full);
+}
+#save-btn:hover { filter: brightness(1.12); box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+
+/* ── Segmented button groups ── */
+.seg-group {
+  display: flex;
+  border-radius: var(--md-sys-shape-corner-full);
+  overflow: hidden;
+  border: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.seg-group button {
+  flex: 1;
+  padding: 8px 4px;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  background: transparent;
+  color: var(--md-sys-color-on-surface-variant);
+  border: none;
+  border-right: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 0;
+  transition: background 150ms;
+  font-family: 'Roboto Flex', sans-serif;
+  font-weight: 400;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.seg-group button:last-child { border-right: none; }
+
+.seg-group button.active {
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+  font-weight: 600;
+}
+
+.seg-group button:hover:not(.active) { background: var(--md-sys-color-surface-container-high); }
+
+/* ── Sliders ── */
 input[type="range"] {
-  width: 84px;
-  accent-color: #4af;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 88px;
+  height: 4px;
+  background: var(--md-sys-color-surface-container-highest);
+  border-radius: var(--md-sys-shape-corner-full);
+  outline: none;
   cursor: pointer;
   flex-shrink: 0;
 }
 
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--md-sys-color-primary);
+  border: 2px solid var(--md-sys-color-surface);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--md-sys-color-primary);
+  border: 2px solid var(--md-sys-color-surface);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  cursor: pointer;
+}
+
+/* ── Select dropdowns ── */
 select {
   background: transparent;
-  border: 1px solid #1a1a35;
-  color: #4af;
-  padding: 5px 7px;
-  font-family: monospace;
-  font-size: 10px;
+  border: 1px solid var(--md-sys-color-outline);
+  border-radius: var(--md-sys-shape-corner-extra-small);
+  color: var(--md-sys-color-on-surface);
+  padding: 8px 12px;
+  font-family: 'Roboto Flex', sans-serif;
+  font-size: 13px;
   cursor: pointer;
   outline: none;
-  max-width: 130px;
-  box-sizing: border-box;
+  max-width: 150px;
+}
+
+select option {
+  background: var(--md-sys-color-surface-container);
+  color: var(--md-sys-color-on-surface);
 }
 
 #save-format {
   max-width: none;
   width: 100%;
-  margin-bottom: 6px;
 }
 
-select option { background: #05050d; }
-
-/* Base button */
-button, .file-btn {
-  background: transparent;
-  border: 1px solid #4af;
-  color: #4af;
-  font-family: monospace;
-  font-size: 10px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
+/* ── Checkboxes ── */
+input[type="checkbox"] {
+  accent-color: var(--md-sys-color-primary);
+  width: 18px;
+  height: 18px;
+  border-radius: 2px;
   cursor: pointer;
-  padding: 8px 0;
-  width: 100%;
-  text-align: center;
-  display: block;
-  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
 }
 
-button:hover, .file-btn:hover { background: #4af; color: #05050d; }
-
-/* Toggle groups */
-.btn-group { display: flex; gap: 3px; }
-
-.btn-group button {
-  flex: 1;
-  padding: 6px 0;
-  font-size: 9px;
-  letter-spacing: 1px;
-  border-color: #1a1a35;
-  color: #4af;
-  opacity: 0.45;
+/* ── Check rows ── */
+.check-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  letter-spacing: 0.4px;
+  color: var(--md-sys-color-on-surface-variant);
+  cursor: pointer;
 }
 
-.btn-group button.active {
-  background: #4af; color: #05050d;
-  border-color: #4af; opacity: 1;
+/* ── Color swatches ── */
+.swatch-pair {
+  display: flex;
+  gap: 12px;
 }
-
-.btn-group button:hover { opacity: 1; background: transparent; color: #4af; }
-.btn-group button.active:hover { background: #4af; color: #05050d; }
-
-/* Color swatches */
-.swatch-pair { display: flex; gap: 10px; }
 
 .swatch-item {
-  display: flex; flex-direction: column;
-  align-items: center; gap: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
 }
 
 .swatch-item span {
-  font-size: 8px; letter-spacing: 1px;
-  opacity: 0.3; text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  color: var(--md-sys-color-on-surface-variant);
+  opacity: 0.6;
+  text-transform: uppercase;
 }
 
 .swatch {
-  width: 36px; height: 22px;
-  border: 1px solid #1a1a35;
+  width: 40px;
+  height: 26px;
+  border-radius: var(--md-sys-shape-corner-extra-small);
+  border: 1px solid var(--md-sys-color-outline-variant);
   cursor: pointer;
-  transition: transform 0.12s;
+  transition: transform 150ms, border-color 150ms;
 }
 
-.swatch:hover { transform: scale(1.06); border-color: #4af; }
+.swatch:hover {
+  transform: scale(1.08);
+  border-color: var(--md-sys-color-primary);
+}
 
-.preset-row { display: flex; gap: 5px; flex-wrap: wrap; }
+/* ── Preset color buttons ── */
+.preset-row { display: flex; gap: 6px; flex-wrap: wrap; }
 
 .preset-btn {
-  width: 26px !important; height: 18px !important;
-  padding: 0 !important; border: 1px solid #1a1a35 !important;
-  cursor: pointer; transition: transform 0.12s !important;
+  width: 28px !important;
+  height: 20px !important;
+  padding: 0 !important;
+  border-radius: var(--md-sys-shape-corner-extra-small) !important;
+  border: 1px solid transparent !important;
+  cursor: pointer;
+  transition: transform 150ms !important;
   letter-spacing: 0 !important;
+  font-size: 0 !important;
 }
 
-.preset-btn:hover { transform: scale(1.1); border-color: #4af !important; background: inherit !important; }
+.preset-btn:hover {
+  transform: scale(1.1);
+  border-color: var(--md-sys-color-primary) !important;
+  filter: none !important;
+  background: inherit !important;
+}
 
-
+/* ── Hidden color inputs ── */
 input[type="color"] {
-  position: absolute; width: 0; height: 0;
-  opacity: 0; pointer-events: none;
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
 }
 
-/* Checkbox */
-.check-row {
-  display: flex; align-items: center; gap: 6px;
-  font-size: 10px; letter-spacing: 1px; opacity: 0.4;
-  cursor: pointer; text-transform: uppercase;
+/* ── File upload button ── */
+.file-upload-btn {
+  background: transparent;
+  border: 1px solid var(--md-sys-color-outline);
+  color: var(--md-sys-color-on-surface-variant);
+  border-radius: var(--md-sys-shape-corner-full);
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  display: block;
+  letter-spacing: 0.1px;
+  transition: background 150ms;
 }
 
-.check-row input[type="checkbox"] {
-  accent-color: #af4; width: 12px; height: 12px; cursor: pointer;
+.file-upload-btn:hover {
+  background: var(--md-sys-color-surface-container-high);
 }
 
-/* Zoom row */
-.zoom-row { display: flex; align-items: center; gap: 6px; }
+/* ── URL text input ── */
+.url-field {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-sys-shape-corner-extra-small);
+  color: var(--md-sys-color-on-surface);
+  font-family: 'Roboto Flex', sans-serif;
+  font-size: 12px;
+  padding: 8px 12px;
+  outline: none;
+  letter-spacing: 0;
+  transition: border-color 150ms;
+}
 
-.zoom-row button {
-  width: 26px; height: 26px;
-  padding: 0; font-size: 15px; line-height: 1;
-  flex-shrink: 0;
+.url-field:focus {
+  border-color: var(--md-sys-color-primary);
+}
+
+.url-field::placeholder {
+  color: var(--md-sys-color-on-surface-variant);
+  opacity: 0.5;
+}
+
+/* ── Custom charset input ── */
+.charset-field {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-sys-shape-corner-extra-small);
+  color: var(--md-sys-color-on-surface);
+  font-family: monospace;
+  font-size: 12px;
+  padding: 8px 12px;
+  outline: none;
+  letter-spacing: 1px;
+  transition: border-color 150ms;
+}
+
+.charset-field:focus {
+  border-color: var(--md-sys-color-primary);
+}
+
+/* ── Zoom row ── */
+.zoom-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .zoom-val {
-  flex: 1; text-align: center;
-  font-size: 10px; opacity: 0.4;
+  flex: 1;
+  text-align: center;
+  font-size: 12px;
+  color: var(--md-sys-color-on-surface-variant);
+  opacity: 0.7;
+  cursor: pointer;
 }
 
-#save-btn {
-  width: 100%;
-  background: #af4;
-  color: #05050d;
-  border-color: #af4;
-  font-weight: 700;
-  letter-spacing: 2px;
-  font-size: 11px;
-}
-#save-btn:hover { background: #cff77a; border-color: #cff77a; color: #05050d; }
-
-/* ── Main ── */
-.main {
-  flex: 1; display: flex;
-  flex-direction: column;
-  overflow: hidden; position: relative;
-  min-width: 0;
-}
-
-.topbar {
+/* ── Top App Bar (mobile only) ── */
+.top-app-bar {
   display: none;
-  align-items: center; gap: 10px;
-  padding: 10px 14px;
-  border-bottom: 1px solid #151528;
+  height: 64px;
+  padding: 0 8px 0 4px;
+  align-items: center;
+  gap: 4px;
+  background: var(--md-sys-color-surface-container);
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
   flex-shrink: 0;
 }
 
-.menu-btn {
-  width: 32px; height: 32px; padding: 0;
-  font-size: 14px; flex-shrink: 0;
-  border-color: #1a1a35 !important;
-  letter-spacing: 0 !important;
+.top-app-bar h1 {
+  flex: 1;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.15px;
+  color: var(--md-sys-color-on-surface);
+  margin-left: 8px;
 }
 
-.menu-btn:hover { background: transparent !important; border-color: #4af !important; }
-
-.topbar h1 {
-  font-size: 11px; letter-spacing: 3px;
-  text-transform: uppercase; opacity: 0.3;
-}
-
-.ascii-scroll {
-  flex: 1; overflow: auto;
-  padding: 28px;
+/* ── Main content ── */
+main {
+  flex: 1;
   display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
-  transition: outline 0.1s;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
   position: relative;
 }
 
-.ascii-scroll.drag-over {
-  outline: 2px dashed #4af;
-  outline-offset: -6px;
-  background: rgba(68,170,255,0.04);
+/* ── Canvas area ── */
+.canvas-area {
+  flex: 1;
+  overflow: auto;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--md-sys-color-surface-container-lowest);
+  position: relative;
+  transition: outline 0.1s;
 }
 
+.canvas-area.drag-over {
+  outline: 2px dashed var(--md-sys-color-primary);
+  outline-offset: -6px;
+  background: rgba(142,207,237,0.04);
+}
+
+/* ── ASCII wrapper ── */
 .ascii-wrapper {
-  cursor: crosshair; user-select: none;
+  cursor: crosshair;
+  user-select: none;
   transform-origin: top left;
   display: inline-block;
 }
@@ -309,41 +546,249 @@ input[type="color"] {
   image-rendering: pixelated;
 }
 
+/* ── Hint bar ── */
 .hint {
-  flex-shrink: 0; padding: 8px 16px;
-  font-size: 9px; letter-spacing: 2px;
-  opacity: 0.15; text-transform: uppercase;
+  padding: 8px 16px;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  color: var(--md-sys-color-on-surface-variant);
+  background: var(--md-sys-color-surface-container-low);
+  border-top: 1px solid var(--md-sys-color-outline-variant);
   text-align: center;
-  border-top: 1px solid #0e0e1e;
+  opacity: 0.6;
+  font-family: 'Roboto Flex', sans-serif;
+  flex-shrink: 0;
 }
 
-/* ── Mobile overlay ── */
-.sidebar-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(5,5,13,0.75);
-  z-index: 90; backdrop-filter: blur(3px);
+/* ── Sidebar overlay (mobile scrim) ── */
+#sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 90;
+  backdrop-filter: blur(2px);
 }
 
-/* ── Responsive ── */
+#sidebar-overlay.open { display: block; }
+
+/* ── Render overlay ── */
+.render-overlay {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background: rgba(15,20,23,0.75);
+  z-index: 10;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(3px);
+}
+
+.render-overlay.visible { display: flex; }
+
+.render-overlay span {
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--md-sys-color-primary);
+  animation: blink 0.8s step-end infinite;
+  font-family: 'Roboto Flex', sans-serif;
+}
+
+@keyframes blink { 50% { opacity: 0.2; } }
+
+/* ── GIF Modal — MD3 Dialog ── */
+#gif-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(6px);
+}
+
+#gif-modal.open { display: flex; }
+
+.modal-box {
+  background: var(--md-sys-color-surface-container-high);
+  border-radius: var(--md-sys-shape-corner-extra-large);
+  padding: 24px;
+  width: min(600px, 96vw);
+  max-height: 92dvh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.5);
+}
+
+.modal-box h2 {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--md-sys-color-on-surface);
+  letter-spacing: 0.15px;
+}
+
+/* ── GIF modes grid ── */
+.gif-modes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.gif-mode {
+  background: var(--md-sys-color-surface-container);
+  border-radius: var(--md-sys-shape-corner-medium);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gif-mode h3 {
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--md-sys-color-primary);
+  font-weight: 600;
+}
+
+.gif-mode p {
+  font-size: 11px;
+  color: var(--md-sys-color-on-surface-variant);
+  line-height: 1.5;
+  opacity: 0.8;
+}
+
+.gif-mode .row > label {
+  font-size: 11px;
+  color: var(--md-sys-color-on-surface-variant);
+  opacity: 0.8;
+}
+
+.gif-mode input[type="range"] { width: 72px; }
+
+.gif-preview {
+  width: 100%;
+  border-radius: var(--md-sys-shape-corner-extra-small);
+  background: var(--md-sys-color-surface-container-lowest);
+  max-height: 120px;
+  object-fit: contain;
+  display: block;
+  border: none;
+}
+
+/* ── GIF checks ── */
+.gif-check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  color: var(--md-sys-color-on-surface-variant);
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.gif-check input[type="checkbox"] {
+  accent-color: var(--md-sys-color-primary);
+  width: 14px;
+  height: 14px;
+}
+
+.gif-checks { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* ── GIF generate button ── */
+.gif-gen-btn {
+  background: var(--md-sys-color-primary-container) !important;
+  color: var(--md-sys-color-on-primary-container) !important;
+  border: none !important;
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.5px !important;
+  padding: 8px 16px !important;
+  cursor: pointer;
+  transition: filter 150ms !important;
+  font-family: 'Roboto Flex', sans-serif !important;
+  margin-top: 2px;
+}
+
+.gif-gen-btn:hover { filter: brightness(1.1) !important; }
+
+/* ── GIF progress bar ── */
+.gif-progress {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--md-sys-color-surface-container-high);
+  padding: 10px 0;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.gif-progress.visible { display: flex; }
+
+.progress-track {
+  width: 100%;
+  height: 4px;
+  background: var(--md-sys-color-surface-container-highest);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--md-sys-color-primary);
+  width: 0%;
+  transition: width 0.1s;
+  border-radius: 2px;
+}
+
+.progress-text {
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+/* ── Modal close button ── */
+.modal-close {
+  align-self: flex-end;
+  width: auto !important;
+}
+
+/* ── Hidden canvases ── */
+#hidden-canvas, #export-canvas { display: none; }
+
+/* ── Mobile responsive ── */
 @media (max-width: 680px) {
   body { overflow: hidden; height: 100dvh; }
 
-  .sidebar {
-    position: fixed; top: 0; left: 0;
+  #sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
     height: 100dvh;
     transform: translateX(-100%);
     z-index: 100;
     width: min(300px, 88vw);
     min-width: 0;
   }
-  .sidebar.open { transform: translateX(0); }
-  .sidebar-overlay.open { display: block; }
-  .sidebar-close { display: block; }
 
-  .topbar { display: flex; }
+  #sidebar.open {
+    transform: translateX(0);
+    box-shadow: 4px 0 24px rgba(0,0,0,0.5);
+  }
 
-  /* Main fills exactly the remaining vertical space */
-  .main {
+  .sidebar-close { display: flex; }
+
+  .top-app-bar { display: flex; }
+
+  main {
     width: 100vw;
     max-width: 100vw;
     height: 100dvh;
@@ -352,162 +797,46 @@ input[type="color"] {
     overflow: hidden;
   }
 
-  .ascii-scroll {
+  .canvas-area {
     flex: 1;
     overflow: auto;
     padding: 12px;
-    /* prevent content from pushing body wider */
     max-width: 100vw;
   }
 
-  .hint { font-size: 8px; padding: 6px 10px; }
+  .hint { font-size: 9px; padding: 6px 10px; }
 
   input[type="range"] { width: 100px; }
 
-  /* Bigger touch targets */
-  .zoom-row button { width: 40px; height: 40px; font-size: 20px; }
-  button, .file-btn { padding: 11px 0; font-size: 11px; }
-  .btn-group button { padding: 9px 0; font-size: 10px; }
+  .zoom-row .btn-icon { width: 44px; height: 44px; font-size: 20px; }
 
-  /* GIF modal full-width, properly scrollable */
+  .gif-modes { grid-template-columns: 1fr; }
+
   .modal-box {
+    padding: 16px;
     width: 96vw;
     max-height: 92dvh;
-    padding: 16px;
   }
-  .gif-modes { grid-template-columns: 1fr; }
 }
-
-/* ── GIF Modal ── */
-.modal-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(5,5,13,0.92);
-  backdrop-filter: blur(8px);
-  z-index: 200; align-items: center; justify-content: center;
-}
-
-.modal-overlay.open { display: flex; }
-
-.modal-box {
-  border: 1px solid #f4a; background: #0a0a18;
-  padding: 22px; width: min(490px, 94vw);
-  display: flex; flex-direction: column; gap: 16px;
-  max-height: 90vh; overflow-y: auto;
-}
-
-.modal-box h2 {
-  font-size: 11px; letter-spacing: 4px;
-  text-transform: uppercase; color: #f4a; opacity: 0.8;
-}
-
-.gif-modes {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-}
-
-@media (max-width: 460px) { .gif-modes { grid-template-columns: 1fr; } }
-
-.gif-mode {
-  border: 1px solid #1c1c2e; padding: 12px;
-  display: flex; flex-direction: column; gap: 8px;
-}
-
-.gif-preview {
-  width: 100%; height: auto;
-  display: block; border: 1px solid #1c1c2e;
-  image-rendering: pixelated;
-  background: #000;
-  max-height: 140px;
-}
-
-.gif-mode h3 {
-  font-size: 9px; letter-spacing: 3px;
-  text-transform: uppercase; color: #f4a;
-}
-
-.gif-mode p {
-  font-size: 9px; opacity: 0.3;
-  letter-spacing: 1px; line-height: 1.5;
-}
-
-.gif-mode .row > label { font-size: 9px; opacity: 0.5; }
-.gif-mode input[type="range"] { width: 72px; }
-
-.gif-check {
-  display: flex; align-items: center; gap: 5px;
-  font-size: 9px; letter-spacing: 1px; opacity: 0.5;
-  cursor: pointer; text-transform: uppercase;
-}
-.gif-check input[type="checkbox"] {
-  accent-color: #f4a; width: 11px; height: 11px; cursor: pointer;
-}
-.gif-checks { display: flex; gap: 10px; flex-wrap: wrap; }
-
-.gif-gen-btn {
-  border-color: #f4a !important; color: #f4a !important;
-  margin-top: 2px; font-size: 9px !important;
-}
-
-.gif-gen-btn:hover { background: #f4a !important; color: #0a0a18 !important; }
-
-.gif-progress {
-  display: none; flex-direction: column; gap: 6px;
-  position: sticky; top: 0; z-index: 10;
-  background: #0a0a18;
-  padding: 8px 0;
-  border-bottom: 1px solid #1c1c2e;
-}
-.gif-progress.visible { display: flex; }
-
-.progress-track { width: 100%; height: 2px; background: #1c1c2e; }
-.progress-fill { height: 2px; background: #f4a; width: 0%; transition: width 0.1s; }
-.progress-text { font-size: 9px; letter-spacing: 2px; opacity: 0.35; text-transform: uppercase; }
-
-.modal-close {
-  align-self: flex-end; width: auto !important;
-  border-color: #2a2a40 !important; color: #444 !important;
-  padding: 6px 16px; font-size: 9px !important; letter-spacing: 2px;
-}
-
-.modal-close:hover {
-  border-color: #f4a !important; color: #f4a !important;
-  background: transparent !important;
-}
-
-#hidden-canvas, #export-canvas { display: none; }
-
-.render-overlay {
-  display: none; position: absolute; inset: 0;
-  background: rgba(5,5,13,0.7); z-index: 10;
-  align-items: center; justify-content: center;
-  backdrop-filter: blur(2px);
-}
-.render-overlay.visible { display: flex; }
-.render-overlay span {
-  font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
-  color: #4af; opacity: 0.7;
-  animation: blink 0.8s step-end infinite;
-}
-@keyframes blink { 50% { opacity: 0.2; } }
 </style>
 </head>
 <body>
 
+<!-- Navigation Drawer -->
 <aside class="sidebar" id="sidebar">
-  <div class="sidebar-header">
-    <h1>ASCII Art</h1>
-    <button class="sidebar-close" id="sidebar-close">✕</button>
+  <div class="drawer-header">
+    <span class="drawer-logo">ASCII ART</span>
+    <button class="btn-icon sidebar-close" id="sidebar-close">✕</button>
   </div>
 
   <!-- SOURCE -->
   <div class="section">
-    <div class="sec-title">Source</div>
-    <label class="file-btn" for="img-upload">Upload Image</label>
-    <input type="file" id="img-upload" accept="image/*">
-    <div style="display:flex;gap:4px">
-      <input type="text" id="url-input" placeholder="https://…" maxlength="512"
-        style="flex:1;min-width:0;background:transparent;border:1px solid #1a1a35;color:#4af;
-               font-family:monospace;font-size:9px;padding:5px 6px;outline:none;letter-spacing:0;">
-      <button id="url-btn" style="width:auto;padding:5px 8px;flex-shrink:0">Go</button>
+    <div class="section-title">Source</div>
+    <label class="file-upload-btn" for="img-upload">Upload Image</label>
+    <input type="file" id="img-upload" accept="image/*" style="display:none">
+    <div style="display:flex;gap:6px;align-items:center">
+      <input type="text" id="url-input" class="url-field" placeholder="https://…" maxlength="512">
+      <button class="btn-tonal" id="url-btn" style="padding:8px 14px;flex-shrink:0;border-radius:var(--md-sys-shape-corner-full)">Go</button>
     </div>
     <div class="row">
       <label>Columns</label>
@@ -537,30 +866,32 @@ input[type="color"] {
         <span class="val" id="contrast-val">0</span>
       </div>
     </div>
-    <button id="render-btn">Render</button>
-    <div style="display:flex;gap:4px">
-      <button id="webcam-btn" style="flex:1">Webcam</button>
-      <button id="webcam-snap-btn" style="flex:1;display:none;border-color:#af4;color:#af4">Snap</button>
-      <button id="webcam-flip-btn" style="display:none;padding:5px 8px" title="Mirror">⇆</button>
+    <div style="display:flex;gap:6px">
+      <button class="btn-filled" id="render-btn" style="flex:1">Render</button>
+    </div>
+    <div style="display:flex;gap:6px;align-items:center">
+      <button class="btn-tonal" id="webcam-btn" style="flex:1">Webcam</button>
+      <button class="btn-tonal" id="webcam-snap-btn" style="flex:1;display:none">Snap</button>
+      <button class="btn-icon" id="webcam-flip-btn" style="display:none" title="Mirror">⇆</button>
     </div>
   </div>
 
   <!-- HOVER -->
   <div class="section">
-    <div class="sec-title">Hover</div>
-    <div class="btn-group" id="hover-mode-group">
+    <div class="section-title">Hover</div>
+    <div class="seg-group" id="hover-mode-group">
       <button class="active" data-hmode="scramble">Scramble</button>
       <button data-hmode="reveal">Reveal</button>
       <button data-hmode="off">Off</button>
     </div>
-    <div class="row" style="margin-top:8px">
+    <div class="row" style="margin-top:4px">
       <label>Radius</label>
       <div class="rr">
         <input type="range" id="radius-range" min="1" max="20" value="6">
         <span class="val" id="radius-val">6</span>
       </div>
     </div>
-    <div id="reveal-extra" style="display:none;margin-top:6px">
+    <div id="reveal-extra" style="display:none">
       <div class="row">
         <label>Auto s</label>
         <div class="rr">
@@ -568,17 +899,29 @@ input[type="color"] {
           <span class="val" id="auto-reveal-val">4</span>
         </div>
       </div>
-      <div style="display:flex;gap:5px;margin-top:6px">
-        <button id="auto-reveal-btn" style="flex:1">Auto</button>
-        <button id="reset-reveal-btn">Reset</button>
+      <div style="display:flex;gap:6px;margin-top:8px">
+        <button class="btn-tonal" id="auto-reveal-btn" style="flex:1">Auto</button>
+        <button class="btn-outlined" id="reset-reveal-btn" style="padding:10px 16px">Reset</button>
       </div>
+    </div>
+  </div>
+
+  <!-- RENDER MODE -->
+  <div class="section">
+    <div class="section-title">Render Mode</div>
+    <div class="seg-group" id="rmode-group">
+      <button class="active" data-rmode="ascii">ASCII</button>
+      <button data-rmode="blocks">Blk</button>
+      <button data-rmode="braille">&#10815;</button>
+      <button data-rmode="pixels">Pxl</button>
+      <button data-rmode="emoji">Em</button>
     </div>
   </div>
 
   <!-- APPEARANCE -->
   <div class="section">
-    <div class="sec-title">Appearance</div>
-    <div class="row">
+    <div class="section-title">Appearance</div>
+    <div class="row" id="charset-row">
       <label>Chars</label>
       <select id="charset-sel">
         <option value="minimal">Minimal</option>
@@ -591,13 +934,11 @@ input[type="color"] {
       </select>
     </div>
     <div id="custom-charset-group" style="display:none">
-      <input type="text" id="custom-charset-input" placeholder=" .:-=+*#%@" maxlength="80"
-        style="width:100%;background:transparent;border:1px solid #1a1a35;color:#4af;
-               font-family:monospace;font-size:9px;padding:5px 6px;outline:none;letter-spacing:1px;">
+      <input type="text" id="custom-charset-input" class="charset-field" placeholder=" .:-=+*#%@" maxlength="80">
     </div>
     <div>
-      <div class="sec-title" style="margin-bottom:5px">Mode</div>
-      <div class="btn-group">
+      <div class="section-title" style="margin-bottom:6px">Mode</div>
+      <div class="seg-group">
         <button class="active" data-mode="mono">Mono</button>
         <button data-mode="color">Color</button>
         <button data-mode="bw">B&amp;W</button>
@@ -606,7 +947,7 @@ input[type="color"] {
       </div>
     </div>
     <div id="duotone-accent-group" style="display:none">
-      <div class="sec-title" style="margin-bottom:5px">Accent</div>
+      <div class="section-title" style="margin-bottom:6px">Accent</div>
       <div class="swatch-pair">
         <div class="swatch-item">
           <div class="swatch" id="dt-swatch"></div>
@@ -628,7 +969,7 @@ input[type="color"] {
       </div>
     </div>
     <div>
-      <div class="sec-title" style="margin-bottom:5px">Presets</div>
+      <div class="section-title" style="margin-bottom:6px">Presets</div>
       <div class="preset-row">
         <button class="preset-btn" data-fg="44aaff" data-bg="080810" title="Blue"></button>
         <button class="preset-btn" data-fg="33ff66" data-bg="001a00" title="Terminal"></button>
@@ -638,14 +979,14 @@ input[type="color"] {
         <button class="preset-btn" data-fg="ff4488" data-bg="0d0010" title="Pink"></button>
       </div>
     </div>
-    <div class="row" id="bw-threshold-group" style="opacity:0.3">
+    <div class="row" id="bw-threshold-group" style="opacity:0.4">
       <label>Threshold</label>
       <div class="rr">
         <input type="range" id="bw-threshold" min="0" max="255" value="128">
         <span class="val" id="bw-threshold-val">128</span>
       </div>
     </div>
-    <label class="check-row" id="dither-group" style="opacity:0.3">
+    <label class="check-row" id="dither-group" style="opacity:0.4">
       <input type="checkbox" id="dither-cb"> Dither
     </label>
     <label class="check-row">
@@ -655,11 +996,11 @@ input[type="color"] {
 
   <!-- VIEW -->
   <div class="section">
-    <div class="sec-title">View</div>
+    <div class="section-title">View</div>
     <div class="zoom-row">
-      <button id="zoom-out">−</button>
+      <button class="btn-icon" id="zoom-out">−</button>
       <span class="zoom-val" id="zoom-val" title="Double-click to reset" style="cursor:pointer">100%</span>
-      <button id="zoom-in">+</button>
+      <button class="btn-icon" id="zoom-in">+</button>
     </div>
     <div class="row">
       <label>Font px</label>
@@ -682,10 +1023,10 @@ input[type="color"] {
 
   <!-- EXPORT -->
   <div class="section">
-    <div class="sec-title">Export</div>
+    <div class="section-title">Export</div>
     <div>
-      <div class="sec-title" style="margin-bottom:5px">Quality</div>
-      <div class="btn-group">
+      <div class="section-title" style="margin-bottom:6px">Quality</div>
+      <div class="seg-group">
         <button class="active" data-quality="1">1×</button>
         <button data-quality="2">2×</button>
         <button data-quality="4">4×</button>
@@ -706,14 +1047,15 @@ input[type="color"] {
   </div>
 </aside>
 
-<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<!-- Mobile sidebar overlay / scrim -->
+<div id="sidebar-overlay"></div>
 
-<main class="main">
-  <div class="topbar">
-    <button class="menu-btn" id="menu-btn">☰</button>
+<main>
+  <header class="top-app-bar">
+    <button class="btn-icon" id="menu-btn">☰</button>
     <h1>ASCII Art</h1>
-  </div>
-  <div class="ascii-scroll" id="scroll-area">
+  </header>
+  <div class="canvas-area" id="scroll-area">
     <div class="render-overlay" id="render-overlay"><span>Rendering…</span></div>
     <div class="ascii-wrapper" id="wrapper">
       <canvas id="ascii-canvas"></canvas>
@@ -723,7 +1065,7 @@ input[type="color"] {
 </main>
 
 <!-- GIF Modal -->
-<div class="modal-overlay" id="gif-modal">
+<div id="gif-modal">
   <div class="modal-box">
     <h2>Export GIF</h2>
     <div class="gif-progress" id="gif-progress">
@@ -731,6 +1073,8 @@ input[type="color"] {
       <p class="progress-text" id="progress-text">Preparing…</p>
     </div>
     <div class="gif-modes">
+
+      <!-- Threshold Sweep -->
       <div class="gif-mode">
         <h3>Threshold Sweep</h3>
         <canvas class="gif-preview" id="th-preview"></canvas>
@@ -754,6 +1098,8 @@ input[type="color"] {
         </div>
         <button class="gif-gen-btn" id="gif-threshold-btn">Generate</button>
       </div>
+
+      <!-- Scramble -->
       <div class="gif-mode">
         <h3>Scramble</h3>
         <canvas class="gif-preview" id="sc-preview"></canvas>
@@ -774,6 +1120,8 @@ input[type="color"] {
         </div>
         <button class="gif-gen-btn" id="gif-scramble-btn">Generate</button>
       </div>
+
+      <!-- Typewriter -->
       <div class="gif-mode">
         <h3>Typewriter</h3>
         <canvas class="gif-preview" id="fade-preview"></canvas>
@@ -794,6 +1142,8 @@ input[type="color"] {
         </div>
         <button class="gif-gen-btn" id="gif-fade-btn">Generate</button>
       </div>
+
+      <!-- Color Cycle -->
       <div class="gif-mode">
         <h3>Color Cycle</h3>
         <canvas class="gif-preview" id="cycle-preview"></canvas>
@@ -821,6 +1171,8 @@ input[type="color"] {
         </div>
         <button class="gif-gen-btn" id="gif-cycle-btn">Generate</button>
       </div>
+
+      <!-- Wave -->
       <div class="gif-mode">
         <h3>Wave</h3>
         <canvas class="gif-preview" id="wave-preview"></canvas>
@@ -848,6 +1200,8 @@ input[type="color"] {
         </div>
         <button class="gif-gen-btn" id="gif-wave-btn">Generate</button>
       </div>
+
+      <!-- Reveal -->
       <div class="gif-mode">
         <h3>Reveal</h3>
         <canvas class="gif-preview" id="reveal-gif-preview"></canvas>
@@ -871,6 +1225,8 @@ input[type="color"] {
         </div>
         <button class="gif-gen-btn" id="gif-reveal-btn">Generate</button>
       </div>
+
+      <!-- No Effect -->
       <div class="gif-mode">
         <h3>No Effect</h3>
         <canvas class="gif-preview" id="noeff-gif-preview"></canvas>
@@ -891,6 +1247,8 @@ input[type="color"] {
         </div>
         <button class="gif-gen-btn" id="gif-noeff-btn">Record</button>
       </div>
+
+      <!-- Cursor -->
       <div class="gif-mode">
         <h3>Cursor</h3>
         <canvas class="gif-preview" id="plain-gif-preview"></canvas>
@@ -914,13 +1272,206 @@ input[type="color"] {
         </div>
         <button class="gif-gen-btn" id="gif-plain-btn">Generate</button>
       </div>
+
+      <!-- Glitch -->
+      <div class="gif-mode">
+        <h3>Glitch</h3>
+        <canvas class="gif-preview" id="glitch-preview"></canvas>
+        <p>Random row horizontal shifts each frame.</p>
+        <div class="row">
+          <label>Frames</label>
+          <div class="rr">
+            <input type="range" id="glitch-frames" min="10" max="40" value="20">
+            <span class="val" id="glitch-frames-val">20</span>
+          </div>
+        </div>
+        <div class="row">
+          <label>Delay ms</label>
+          <div class="rr">
+            <input type="range" id="glitch-delay" min="30" max="100" value="50">
+            <span class="val" id="glitch-delay-val">50</span>
+          </div>
+        </div>
+        <div class="row">
+          <label>Intensity</label>
+          <div class="rr">
+            <input type="range" id="glitch-intensity" min="1" max="8" value="3">
+            <span class="val" id="glitch-intensity-val">3</span>
+          </div>
+        </div>
+        <button class="gif-gen-btn" id="gif-glitch-btn">Generate</button>
+      </div>
+
+      <!-- Matrix Rain -->
+      <div class="gif-mode">
+        <h3>Matrix Rain</h3>
+        <canvas class="gif-preview" id="matrix-preview"></canvas>
+        <p>Green column rain effect.</p>
+        <div class="row">
+          <label>Frames</label>
+          <div class="rr">
+            <input type="range" id="matrix-frames" min="15" max="60" value="30">
+            <span class="val" id="matrix-frames-val">30</span>
+          </div>
+        </div>
+        <div class="row">
+          <label>Delay ms</label>
+          <div class="rr">
+            <input type="range" id="matrix-delay" min="40" max="100" value="60">
+            <span class="val" id="matrix-delay-val">60</span>
+          </div>
+        </div>
+        <div class="row">
+          <label>Speed</label>
+          <div class="rr">
+            <input type="range" id="matrix-speed" min="1" max="4" value="2">
+            <span class="val" id="matrix-speed-val">2</span>
+          </div>
+        </div>
+        <button class="gif-gen-btn" id="gif-matrix-btn">Generate</button>
+      </div>
+
+      <!-- Dissolve -->
+      <div class="gif-mode">
+        <h3>Dissolve</h3>
+        <canvas class="gif-preview" id="dissolve-preview"></canvas>
+        <p>Chars randomly vanish each frame.</p>
+        <div class="row">
+          <label>Frames</label>
+          <div class="rr">
+            <input type="range" id="dissolve-frames" min="20" max="80" value="40">
+            <span class="val" id="dissolve-frames-val">40</span>
+          </div>
+        </div>
+        <div class="row">
+          <label>Delay ms</label>
+          <div class="rr">
+            <input type="range" id="dissolve-delay" min="30" max="100" value="50">
+            <span class="val" id="dissolve-delay-val">50</span>
+          </div>
+        </div>
+        <div class="gif-checks">
+          <label class="gif-check"><input type="checkbox" id="dissolve-loop"> Loop</label>
+        </div>
+        <button class="gif-gen-btn" id="gif-dissolve-btn">Generate</button>
+      </div>
+
+      <!-- Shake -->
+      <div class="gif-mode">
+        <h3>Shake</h3>
+        <canvas class="gif-preview" id="shake-preview"></canvas>
+        <p>Whole image shifts randomly each frame.</p>
+        <div class="row">
+          <label>Frames</label>
+          <div class="rr">
+            <input type="range" id="shake-frames" min="10" max="30" value="15">
+            <span class="val" id="shake-frames-val">15</span>
+          </div>
+        </div>
+        <div class="row">
+          <label>Delay ms</label>
+          <div class="rr">
+            <input type="range" id="shake-delay" min="40" max="120" value="60">
+            <span class="val" id="shake-delay-val">60</span>
+          </div>
+        </div>
+        <div class="row">
+          <label>Intensity</label>
+          <div class="rr">
+            <input type="range" id="shake-intensity" min="1" max="6" value="3">
+            <span class="val" id="shake-intensity-val">3</span>
+          </div>
+        </div>
+        <button class="gif-gen-btn" id="gif-shake-btn">Generate</button>
+      </div>
+
+      <!-- Blink Storm -->
+      <div class="gif-mode">
+        <h3>Blink Storm</h3>
+        <canvas class="gif-preview" id="blink-preview"></canvas>
+        <p>Random chars blink off each frame.</p>
+        <div class="row">
+          <label>Frames</label>
+          <div class="rr">
+            <input type="range" id="blink-frames" min="10" max="30" value="15">
+            <span class="val" id="blink-frames-val">15</span>
+          </div>
+        </div>
+        <div class="row">
+          <label>Delay ms</label>
+          <div class="rr">
+            <input type="range" id="blink-delay" min="30" max="80" value="40">
+            <span class="val" id="blink-delay-val">40</span>
+          </div>
+        </div>
+        <div class="row">
+          <label>Density %</label>
+          <div class="rr">
+            <input type="range" id="blink-density" min="10" max="80" value="40">
+            <span class="val" id="blink-density-val">40</span>
+          </div>
+        </div>
+        <button class="gif-gen-btn" id="gif-blink-btn">Generate</button>
+      </div>
+
+      <!-- Zoom Pulse -->
+      <div class="gif-mode">
+        <h3>Zoom Pulse</h3>
+        <canvas class="gif-preview" id="zoom-preview"></canvas>
+        <p>Sinusoidal zoom in/out pulse.</p>
+        <div class="row">
+          <label>Frames</label>
+          <div class="rr">
+            <input type="range" id="zoompulse-frames" min="12" max="48" value="24" step="4">
+            <span class="val" id="zoompulse-frames-val">24</span>
+          </div>
+        </div>
+        <div class="row">
+          <label>Delay ms</label>
+          <div class="rr">
+            <input type="range" id="zoompulse-delay" min="40" max="120" value="60">
+            <span class="val" id="zoompulse-delay-val">60</span>
+          </div>
+        </div>
+        <div class="row">
+          <label>Max %</label>
+          <div class="rr">
+            <input type="range" id="zoompulse-max" min="110" max="200" value="140" step="5">
+            <span class="val" id="zoompulse-max-val">140</span>
+          </div>
+        </div>
+        <button class="gif-gen-btn" id="gif-zoom-btn">Generate</button>
+      </div>
+
+      <!-- Invert -->
+      <div class="gif-mode">
+        <h3>Invert</h3>
+        <canvas class="gif-preview" id="invert-preview"></canvas>
+        <p>Colors lerp toward inverted each frame.</p>
+        <div class="row">
+          <label>Frames</label>
+          <div class="rr">
+            <input type="range" id="invert-frames" min="10" max="30" value="20">
+            <span class="val" id="invert-frames-val">20</span>
+          </div>
+        </div>
+        <div class="row">
+          <label>Delay ms</label>
+          <div class="rr">
+            <input type="range" id="invert-delay" min="40" max="120" value="60">
+            <span class="val" id="invert-delay-val">60</span>
+          </div>
+        </div>
+        <button class="gif-gen-btn" id="gif-invert-btn">Generate</button>
+      </div>
+
     </div>
-    <button class="modal-close" id="gif-modal-close">Close</button>
+    <button class="btn-outlined modal-close" id="gif-modal-close">Close</button>
   </div>
 </div>
 
-<canvas id="hidden-canvas"></canvas>
-<canvas id="export-canvas"></canvas>
+<canvas id="hidden-canvas" style="display:none"></canvas>
+<canvas id="export-canvas" style="display:none"></canvas>
 
 <script>
 const CHARSETS = {
@@ -953,6 +1504,7 @@ let fontFamily       = '"Courier New",monospace';
 let duotoneAccent    = '#ff4400';
 let scramblingCells  = new Map();
 let animFrame = null, isRendered = false;
+let renderMode       = 'ascii';
 
 // ── DOM ───────────────────────────────────────────────────────────────────
 const asciiEl    = document.getElementById('ascii-canvas');
@@ -1051,6 +1603,29 @@ document.querySelectorAll('[data-mode]').forEach(btn => {
     document.getElementById('dither-group').style.opacity = colorMode === 'bw' ? '1' : '0.3';
     document.getElementById('duotone-accent-group').style.display = colorMode === 'duotone' ? '' : 'none';
     if (isRendered) renderAscii();
+  });
+});
+
+function updateCharsetOverlay() {
+  const override = renderMode !== 'ascii';
+  const opacity = override ? '0.3' : '';
+  const pe = override ? 'none' : '';
+  document.getElementById('charset-row').style.opacity = opacity;
+  document.getElementById('charset-row').style.pointerEvents = pe;
+  const ccg = document.getElementById('custom-charset-group');
+  ccg.style.opacity = opacity;
+  ccg.style.pointerEvents = pe;
+}
+
+document.querySelectorAll('#rmode-group [data-rmode]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    renderMode = btn.dataset.rmode;
+    document.querySelectorAll('#rmode-group [data-rmode]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    updateCharsetOverlay();
+    measureChar(); applyZoom();
+    if (loadedImage) { buildGrid(loadedImage); renderAscii(); }
+    else if (isRendered) { renderAscii(); }
   });
 });
 
@@ -1189,7 +1764,12 @@ scrollArea.addEventListener('drop', e => {
 // ── Build grid ────────────────────────────────────────────────────────────
 function buildGridFromData(data, w, h) {
   cols = w; rows = h;
-  const charset = CHARSETS[charsetKey] || CHARSETS.minimal;
+  let charset;
+  if (renderMode === 'blocks')  charset = ' ░▒▓█';
+  else if (renderMode === 'braille') charset = ' ⠁⠃⠇⠯⠿⣿';
+  else if (renderMode === 'pixels') charset = ' X'; // placeholder, not used for rendering
+  else if (renderMode === 'emoji') charset = ['⬛','🌑','🌓','🌕','⬜'].join('');
+  else charset = CHARSETS[charsetKey] || CHARSETS.minimal;
   grid = [];
   const factor = contrastAdj !== 0 ? (259 * (contrastAdj + 255)) / (255 * (259 - contrastAdj)) : 1;
 
@@ -1256,6 +1836,40 @@ function buildGrid(img) {
 }
 
 // ── Render ────────────────────────────────────────────────────────────────
+function getCellColor(cell) {
+  const bwThr = +bwThreshold.value;
+  if (colorMode === 'color') return `rgb(${cell.r},${cell.g},${cell.b})`;
+  if (colorMode === 'bw') {
+    const lum = 0.299*cell.r + 0.587*cell.g + 0.114*cell.b;
+    if (lum < bwThr) return null;
+    const v = Math.round(lerpChannel(bwThr, 255, (lum - bwThr) / (255 - bwThr || 1)));
+    return `rgb(${v},${v},${v})`;
+  }
+  if (colorMode === 'duotone') return getDuotoneColor(cell);
+  if (colorMode === 'edge') {
+    const mag = cell.edge || 0;
+    if (mag < 0.08) return null;
+    const v = Math.round(mag * 255);
+    return `rgb(${v},${v},${v})`;
+  }
+  return monoColor;
+}
+
+function getPixelCellColor(cell) {
+  if (colorMode === 'color') return `rgb(${cell.r},${cell.g},${cell.b})`;
+  if (colorMode === 'bw') {
+    const lum = 0.299*cell.r + 0.587*cell.g + 0.114*cell.b;
+    const v = Math.round(lum);
+    return `rgb(${v},${v},${v})`;
+  }
+  if (colorMode === 'duotone') return getDuotoneColor(cell);
+  if (colorMode === 'edge') {
+    const v = Math.round((cell.edge || 0) * 255);
+    return `rgb(${v},${v},${v})`;
+  }
+  return monoColor;
+}
+
 function renderAscii() {
   const cw = baseCharW || 6, ch = baseCharH || 9;
   const W = cols * cw, H = rows * ch;
@@ -1264,31 +1878,31 @@ function renderAscii() {
   }
   asciiCtx.fillStyle = bgColor;
   asciiCtx.fillRect(0, 0, W, H);
+
+  if (renderMode === 'pixels') {
+    for (let y = 0; y < rows; y++) {
+      for (let x = 0; x < cols; x++) {
+        const idx = y*cols+x;
+        if (hoverMode === 'reveal' && !revealedSet.has(idx)) continue;
+        const cell = grid[idx];
+        asciiCtx.fillStyle = getPixelCellColor(cell);
+        asciiCtx.fillRect(x * cw, y * ch, cw, ch);
+      }
+    }
+    wrapper.style.background = bgColor;
+    return;
+  }
+
   asciiCtx.font = `${fontSize}px ${fontFamily}`;
   asciiCtx.textBaseline = 'top';
-  const bwThr = +bwThreshold.value;
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
       const cell = grid[y*cols+x];
       if (hoverMode === 'reveal' && !revealedSet.has(y*cols+x)) continue;
       if (!cell.char || cell.char === ' ') continue;
-      if (colorMode === 'color') {
-        asciiCtx.fillStyle = `rgb(${cell.r},${cell.g},${cell.b})`;
-      } else if (colorMode === 'bw') {
-        const lum = 0.299*cell.r + 0.587*cell.g + 0.114*cell.b;
-        if (lum < bwThr) continue;
-        const v = Math.round(lerpChannel(bwThr, 255, (lum - bwThr) / (255 - bwThr || 1)));
-        asciiCtx.fillStyle = `rgb(${v},${v},${v})`;
-      } else if (colorMode === 'duotone') {
-        asciiCtx.fillStyle = getDuotoneColor(cell);
-      } else if (colorMode === 'edge') {
-        const mag = cell.edge || 0;
-        if (mag < 0.08) continue;
-        const v = Math.round(mag * 255);
-        asciiCtx.fillStyle = `rgb(${v},${v},${v})`;
-      } else {
-        asciiCtx.fillStyle = monoColor;
-      }
+      const color = getCellColor(cell);
+      if (!color) continue;
+      asciiCtx.fillStyle = color;
       asciiCtx.fillText(cell.char, x * cw, y * ch);
     }
   }
@@ -1463,12 +2077,17 @@ document.getElementById('save-btn').addEventListener('click', () => {
 // ── Hover / Touch scramble ────────────────────────────────────────────────
 let charW = 0, charH = 0, baseCharW = 0, baseCharH = 0;
 function measureChar() {
-  const t = document.createElement('span');
-  t.style.cssText = `position:absolute;visibility:hidden;font-size:${fontSize}px;font-family:${fontFamily};letter-spacing:1px;white-space:pre;`;
-  t.textContent = 'X'; document.body.appendChild(t);
-  baseCharW = t.offsetWidth || fontSize*0.6+1; baseCharH = t.offsetHeight || fontSize*1.2;
+  if (renderMode === 'emoji') {
+    baseCharW = fontSize * 1.3;
+    baseCharH = fontSize * 1.2;
+  } else {
+    const t = document.createElement('span');
+    t.style.cssText = `position:absolute;visibility:hidden;font-size:${fontSize}px;font-family:${fontFamily};letter-spacing:1px;white-space:pre;`;
+    t.textContent = 'X'; document.body.appendChild(t);
+    baseCharW = t.offsetWidth || fontSize*0.6+1; baseCharH = t.offsetHeight || fontSize*1.2;
+    document.body.removeChild(t);
+  }
   charW = baseCharW * zoomLevel; charH = baseCharH * zoomLevel;
-  document.body.removeChild(t);
 }
 
 function spawnScramble(clientX, clientY) {
@@ -1641,24 +2260,17 @@ function drawCell(idx) {
   asciiCtx.fillStyle = bgColor;
   asciiCtx.fillRect(x * cw, y * ch, cw + 1, ch + 1);
   if (hoverMode === 'reveal' && !revealedSet.has(idx)) return;
-  if (!cell.char || cell.char === ' ') return;
-  if (colorMode === 'color')       asciiCtx.fillStyle = `rgb(${cell.r},${cell.g},${cell.b})`;
-  else if (colorMode === 'bw') {
-    const lum = 0.299*cell.r + 0.587*cell.g + 0.114*cell.b;
-    const thr = +bwThreshold.value;
-    if (lum < thr) return;
-    const v = Math.round(lerpChannel(thr, 255, (lum - thr) / (255 - thr || 1)));
-    asciiCtx.fillStyle = `rgb(${v},${v},${v})`;
-  } else if (colorMode === 'edge') {
-    const mag = cell.edge || 0;
-    if (mag < 0.08) return;
-    const v = Math.round(mag * 255);
-    asciiCtx.fillStyle = `rgb(${v},${v},${v})`;
-  } else if (colorMode === 'duotone') {
-    asciiCtx.fillStyle = getDuotoneColor(cell);
-  } else {
-    asciiCtx.fillStyle = monoColor;
+
+  if (renderMode === 'pixels') {
+    asciiCtx.fillStyle = getPixelCellColor(cell);
+    asciiCtx.fillRect(x * cw, y * ch, cw, ch);
+    return;
   }
+
+  if (!cell.char || cell.char === ' ') return;
+  const color = getCellColor(cell);
+  if (!color) return;
+  asciiCtx.fillStyle = color;
   asciiCtx.fillText(cell.char, x * cw, y * ch);
 }
 
@@ -1708,6 +2320,13 @@ function startAllGifPreviews() {
   startRevealGifPreview();
   startPlainGifPreview();
   startNoEffectPreview();
+  startGlitchPreview();
+  startMatrixPreview();
+  startDissolvePreview();
+  startShakePreview();
+  startBlinkPreview();
+  startZoompulsePreview();
+  startInvertPreview();
 }
 function closeGifModal() {
   document.getElementById('gif-modal').classList.remove('open');
@@ -1737,9 +2356,23 @@ document.getElementById('gif-cycle-btn').addEventListener('click',      generate
 document.getElementById('gif-wave-btn').addEventListener('click',       generateWaveGIF);
 document.getElementById('gif-reveal-btn').addEventListener('click',     generateRevealGIF);
 document.getElementById('gif-plain-btn').addEventListener('click',      generatePlainGIF);
+document.getElementById('gif-glitch-btn').addEventListener('click',     generateGlitchGIF);
+document.getElementById('gif-matrix-btn').addEventListener('click',     generateMatrixGIF);
+document.getElementById('gif-dissolve-btn').addEventListener('click',   generateDissolveGIF);
+document.getElementById('gif-shake-btn').addEventListener('click',      generateShakeGIF);
+document.getElementById('gif-blink-btn').addEventListener('click',      generateBlinkGIF);
+document.getElementById('gif-zoom-btn').addEventListener('click',       generateZoompulseGIF);
+document.getElementById('gif-invert-btn').addEventListener('click',     generateInvertGIF);
 
 [['reveal-gif-frames','reveal-gif-frames-val'],['reveal-gif-delay','reveal-gif-delay-val'],
- ['plain-gif-frames','plain-gif-frames-val'],['plain-gif-delay','plain-gif-delay-val']
+ ['plain-gif-frames','plain-gif-frames-val'],['plain-gif-delay','plain-gif-delay-val'],
+ ['glitch-frames','glitch-frames-val'],['glitch-delay','glitch-delay-val'],['glitch-intensity','glitch-intensity-val'],
+ ['matrix-frames','matrix-frames-val'],['matrix-delay','matrix-delay-val'],['matrix-speed','matrix-speed-val'],
+ ['dissolve-frames','dissolve-frames-val'],['dissolve-delay','dissolve-delay-val'],
+ ['shake-frames','shake-frames-val'],['shake-delay','shake-delay-val'],['shake-intensity','shake-intensity-val'],
+ ['blink-frames','blink-frames-val'],['blink-delay','blink-delay-val'],['blink-density','blink-density-val'],
+ ['zoompulse-frames','zoompulse-frames-val'],['zoompulse-delay','zoompulse-delay-val'],['zoompulse-max','zoompulse-max-val'],
+ ['invert-frames','invert-frames-val'],['invert-delay','invert-delay-val'],
 ].forEach(([id, vid]) => {
   const el = document.getElementById(id);
   if (el) el.addEventListener('input', () => document.getElementById(vid).textContent = el.value);
@@ -2080,6 +2713,7 @@ async function generateWaveGIF() {
 
 // ── GIF Previews ──────────────────────────────────────────────────────────
 let thPreviewRaf = null, scPreviewRaf = null, fadePreviewRaf = null, cyclePreviewRaf = null, wavePreviewRaf = null, revealGifRaf = null, plainGifRaf = null;
+let glitchPreviewRaf = null, matrixPreviewRaf = null, dissolvePreviewRaf = null, shakePreviewRaf = null, blinkPreviewRaf = null, zoompulsePreviewRaf = null, invertPreviewRaf = null;
 
 // HSL helper for color cycle
 function hslToRgb(h, s, l) {
@@ -2557,9 +3191,543 @@ function startPlainGifPreview() {
   plainGifRaf = requestAnimationFrame(tick);
 }
 
+// ── GIF: Glitch ───────────────────────────────────────────────────────────
+function buildGlitchFrame(intensity) {
+  const orig = grid.map(c => c.char);
+  const fc = orig.slice();
+  const nRows = Math.floor(intensity * 2);
+  const maxShift = intensity * 2;
+  for (let i = 0; i < nRows; i++) {
+    const ry = Math.floor(Math.random() * rows);
+    const shift = Math.floor(Math.random() * (maxShift * 2 + 1)) - maxShift;
+    for (let x = 0; x < cols; x++) {
+      const sx = ((x - shift) % cols + cols) % cols;
+      fc[ry * cols + x] = orig[ry * cols + sx];
+    }
+  }
+  return fc;
+}
+
+async function generateGlitchGIF() {
+  if (!isRendered) return;
+  const n = +document.getElementById('glitch-frames').value;
+  const d = +document.getElementById('glitch-delay').value;
+  const intensity = +document.getElementById('glitch-intensity').value;
+  const mode = colorMode;
+  const { W, H } = gifCanvasSize();
+  const pal = buildPalette(mode);
+  const oc = document.createElement('canvas'), ox = oc.getContext('2d');
+  const orig = grid.map(c => c.char);
+  const frames = [];
+  for (let f = 0; f < n; f++) {
+    const fc = buildGlitchFrame(intensity);
+    fc.forEach((ch, i) => { grid[i].char = ch; });
+    frames.push(renderGridToIndexed(oc, ox, mode, +bwThreshold.value, pal));
+    setProgress((f+1)/n, `Frame ${f+1} / ${n}…`);
+    if (f % 4 === 0) await yieldUI();
+  }
+  grid.forEach((c, i) => { c.char = orig[i]; });
+  setProgress(1, 'Encoding…'); await yieldUI();
+  downloadGIF(encodeGIF(frames, W, H, pal, d), 'ascii-glitch.gif');
+  hideProgress();
+}
+
+function startGlitchPreview() {
+  const cvs = document.getElementById('glitch-preview');
+  if (!cvs || !isRendered) return;
+  let last = 0;
+  function tick(ts) {
+    const delay = +document.getElementById('glitch-delay').value;
+    if (ts - last >= delay) {
+      last = ts;
+      const intensity = +document.getElementById('glitch-intensity').value;
+      renderToPreviewCanvas(cvs, buildGlitchFrame(intensity));
+    }
+    glitchPreviewRaf = requestAnimationFrame(tick);
+  }
+  glitchPreviewRaf = requestAnimationFrame(tick);
+}
+
+// ── GIF: Matrix Rain ──────────────────────────────────────────────────────
+function buildMatrixFrame(heads, speed, frameIdx) {
+  const fc = new Array(cols * rows).fill(' ');
+  const colChars = [];
+  for (let x = 0; x < cols; x++) {
+    const head = heads[x];
+    for (let y = 0; y < rows; y++) {
+      const idx = y * cols + x;
+      const orig = grid[idx].char;
+      if (!orig || orig === ' ') continue;
+      if (y === head) {
+        fc[idx] = orig; // head row — white
+        colChars.push({ idx, isHead: true });
+      } else if (y < head) {
+        fc[idx] = orig; // above head — green
+        colChars.push({ idx, isHead: false });
+      }
+    }
+  }
+  return { fc, colChars };
+}
+
+async function generateMatrixGIF() {
+  if (!isRendered) return;
+  const n = +document.getElementById('matrix-frames').value;
+  const d = +document.getElementById('matrix-delay').value;
+  const speed = +document.getElementById('matrix-speed').value;
+  const { W, H } = gifCanvasSize();
+  const { fs, cw, ch } = gifCharSize();
+  const { padX, padY } = gifCanvasSize();
+  const pal = buildPalette('color');
+  const oc = document.createElement('canvas'), ox = oc.getContext('2d');
+  const orig = grid.map(c => c.char);
+  const heads = Array.from({ length: cols }, (_, x) => Math.floor(Math.random() * rows));
+  const frames = [];
+
+  for (let f = 0; f < n; f++) {
+    // Advance heads
+    for (let x = 0; x < cols; x++) {
+      heads[x] = (heads[x] + speed) % (rows + 5);
+    }
+    // Render frame with matrix colors
+    oc.width = W; oc.height = H;
+    ox.fillStyle = bgColor; ox.fillRect(0, 0, W, H);
+    ox.font = `${fs}px "Courier New",monospace`; ox.textBaseline = 'top';
+    for (let y = 0; y < rows; y++) {
+      for (let x = 0; x < cols; x++) {
+        const idx = y * cols + x;
+        const c = grid[idx]; if (!c.char || c.char === ' ') continue;
+        const h = heads[x];
+        if (y === h) { ox.fillStyle = '#ffffff'; }
+        else if (y < h && y >= h - rows) { ox.fillStyle = '#33ff66'; }
+        else continue;
+        ox.fillText(c.char, padX + x * cw, padY + y * ch);
+      }
+    }
+    const imgd = ox.getImageData(0, 0, W, H).data;
+    const idx = new Uint8Array(W * H);
+    for (let i = 0; i < W * H; i++) idx[i] = pxToIdx(imgd[i*4], imgd[i*4+1], imgd[i*4+2], 'color', pal);
+    frames.push(idx);
+    setProgress((f+1)/n, `Frame ${f+1} / ${n}…`);
+    if (f % 4 === 0) await yieldUI();
+  }
+  setProgress(1, 'Encoding…'); await yieldUI();
+  downloadGIF(encodeGIF(frames, W, H, pal, d), 'ascii-matrix.gif');
+  hideProgress();
+}
+
+function startMatrixPreview() {
+  const cvs = document.getElementById('matrix-preview');
+  if (!cvs || !isRendered) return;
+  const heads = Array.from({ length: cols }, () => Math.floor(Math.random() * rows));
+  let last = 0;
+  function tick(ts) {
+    const delay = +document.getElementById('matrix-delay').value;
+    if (ts - last >= delay) {
+      last = ts;
+      const speed = +document.getElementById('matrix-speed').value;
+      for (let x = 0; x < cols; x++) heads[x] = (heads[x] + speed) % (rows + 5);
+      const fs = 5, cw = fs * 0.6 + 0.5, lh = fs * 1.15;
+      const W = Math.ceil(cols * cw), H = Math.ceil(rows * lh);
+      if (cvs.width !== W || cvs.height !== H) { cvs.width = W; cvs.height = H; cvs.style.aspectRatio = `${W} / ${H}`; }
+      const pctx = cvs.getContext('2d');
+      pctx.fillStyle = bgColor; pctx.fillRect(0, 0, W, H);
+      pctx.font = `${fs}px "Courier New",monospace`; pctx.textBaseline = 'top';
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          const idx = y * cols + x;
+          const c = grid[idx]; if (!c.char || c.char === ' ') continue;
+          const h = heads[x];
+          if (y === h) { pctx.fillStyle = '#ffffff'; }
+          else if (y < h && y >= h - rows) { pctx.fillStyle = '#33ff66'; }
+          else continue;
+          pctx.fillText(c.char, x * cw, y * lh);
+        }
+      }
+    }
+    matrixPreviewRaf = requestAnimationFrame(tick);
+  }
+  matrixPreviewRaf = requestAnimationFrame(tick);
+}
+
+// ── GIF: Dissolve ─────────────────────────────────────────────────────────
+async function generateDissolveGIF() {
+  if (!isRendered) return;
+  const n = +document.getElementById('dissolve-frames').value;
+  const d = +document.getElementById('dissolve-delay').value;
+  const doLoop = document.getElementById('dissolve-loop').checked;
+  const mode = colorMode;
+  const { W, H } = gifCanvasSize();
+  const pal = buildPalette(mode);
+  const oc = document.createElement('canvas'), ox = oc.getContext('2d');
+  const orig = grid.map(c => c.char);
+  const nonSpace = [];
+  for (let i = 0; i < orig.length; i++) if (orig[i] && orig[i] !== ' ') nonSpace.push(i);
+  // Shuffle
+  for (let i = nonSpace.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1)); [nonSpace[i], nonSpace[j]] = [nonSpace[j], nonSpace[i]];
+  }
+  const perFrame = Math.ceil(nonSpace.length / n);
+  const frames = [];
+  const hidden = new Set();
+
+  function makeFrameChars() {
+    return orig.map((ch, i) => hidden.has(i) ? ' ' : ch);
+  }
+
+  for (let f = 0; f < n; f++) {
+    const fc = makeFrameChars();
+    fc.forEach((ch, i) => { grid[i].char = ch; });
+    frames.push(renderGridToIndexed(oc, ox, mode, +bwThreshold.value, pal));
+    // Add next batch to hidden
+    const start = f * perFrame;
+    for (let k = start; k < Math.min(start + perFrame, nonSpace.length); k++) hidden.add(nonSpace[k]);
+    setProgress((f+1)/n, `Frame ${f+1} / ${n}…`);
+    if (f % 4 === 0) await yieldUI();
+  }
+  if (doLoop) {
+    // Reverse: empty → full
+    for (let f = n - 1; f >= 0; f--) {
+      const startIdx = f * perFrame;
+      const fc = orig.map((ch, i) => {
+        const pos = nonSpace.indexOf(i);
+        if (pos === -1) return ch;
+        return pos < startIdx ? ch : ' ';
+      });
+      fc.forEach((ch, i) => { grid[i].char = ch; });
+      frames.push(renderGridToIndexed(oc, ox, mode, +bwThreshold.value, pal));
+      setProgress(0.5 + (n - f) / (2 * n), `Frame ${n + (n - f)} / ${n * 2}…`);
+      if (f % 4 === 0) await yieldUI();
+    }
+  }
+  grid.forEach((c, i) => { c.char = orig[i]; });
+  setProgress(1, 'Encoding…'); await yieldUI();
+  downloadGIF(encodeGIF(frames, W, H, pal, d), 'ascii-dissolve.gif');
+  hideProgress();
+}
+
+function startDissolvePreview() {
+  const cvs = document.getElementById('dissolve-preview');
+  if (!cvs || !isRendered) return;
+  const orig = grid.map(c => c.char);
+  const nonSpace = [];
+  for (let i = 0; i < orig.length; i++) if (orig[i] && orig[i] !== ' ') nonSpace.push(i);
+  for (let i = nonSpace.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1)); [nonSpace[i], nonSpace[j]] = [nonSpace[j], nonSpace[i]];
+  }
+  let frame = 0, last = 0, dir = 1;
+  function tick(ts) {
+    const delay = +document.getElementById('dissolve-delay').value;
+    const n = +document.getElementById('dissolve-frames').value;
+    if (ts - last >= delay) {
+      last = ts;
+      frame += dir;
+      if (frame >= n) { frame = n - 1; dir = -1; }
+      if (frame < 0) { frame = 0; dir = 1; }
+      const perFrame = Math.ceil(nonSpace.length / n);
+      const hiddenCount = frame * perFrame;
+      const fc = orig.map((ch, i) => {
+        const pos = nonSpace.indexOf(i);
+        return (pos !== -1 && pos < hiddenCount) ? ' ' : ch;
+      });
+      renderToPreviewCanvas(cvs, fc);
+    }
+    dissolvePreviewRaf = requestAnimationFrame(tick);
+  }
+  dissolvePreviewRaf = requestAnimationFrame(tick);
+}
+
+// ── GIF: Shake ────────────────────────────────────────────────────────────
+function buildShakeFrame(dx, dy) {
+  const fc = new Array(cols * rows).fill(' ');
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      const sx = x - dx, sy = y - dy;
+      if (sx >= 0 && sx < cols && sy >= 0 && sy < rows) {
+        fc[y * cols + x] = grid[sy * cols + sx].char;
+      }
+    }
+  }
+  return fc;
+}
+
+async function generateShakeGIF() {
+  if (!isRendered) return;
+  const n = +document.getElementById('shake-frames').value;
+  const d = +document.getElementById('shake-delay').value;
+  const intensity = +document.getElementById('shake-intensity').value;
+  const mode = colorMode;
+  const { W, H } = gifCanvasSize();
+  const pal = buildPalette(mode);
+  const oc = document.createElement('canvas'), ox = oc.getContext('2d');
+  const orig = grid.map(c => c.char);
+  const frames = [];
+  for (let f = 0; f < n; f++) {
+    const dx = Math.floor(Math.random() * (intensity * 2 + 1)) - intensity;
+    const dy = Math.floor(Math.random() * (intensity * 2 + 1)) - intensity;
+    const fc = buildShakeFrame(dx, dy);
+    fc.forEach((ch, i) => { grid[i].char = ch; });
+    frames.push(renderGridToIndexed(oc, ox, mode, +bwThreshold.value, pal));
+    setProgress((f+1)/n, `Frame ${f+1} / ${n}…`);
+    if (f % 4 === 0) await yieldUI();
+  }
+  grid.forEach((c, i) => { c.char = orig[i]; });
+  setProgress(1, 'Encoding…'); await yieldUI();
+  downloadGIF(encodeGIF(frames, W, H, pal, d), 'ascii-shake.gif');
+  hideProgress();
+}
+
+function startShakePreview() {
+  const cvs = document.getElementById('shake-preview');
+  if (!cvs || !isRendered) return;
+  let last = 0;
+  function tick(ts) {
+    const delay = +document.getElementById('shake-delay').value;
+    if (ts - last >= delay) {
+      last = ts;
+      const intensity = +document.getElementById('shake-intensity').value;
+      const dx = Math.floor(Math.random() * (intensity * 2 + 1)) - intensity;
+      const dy = Math.floor(Math.random() * (intensity * 2 + 1)) - intensity;
+      renderToPreviewCanvas(cvs, buildShakeFrame(dx, dy));
+    }
+    shakePreviewRaf = requestAnimationFrame(tick);
+  }
+  shakePreviewRaf = requestAnimationFrame(tick);
+}
+
+// ── GIF: Blink Storm ──────────────────────────────────────────────────────
+function buildBlinkFrame(density) {
+  const orig = grid.map(c => c.char);
+  const fc = orig.slice();
+  const total = fc.length;
+  const hideCount = Math.floor(total * density / 100);
+  // Pick random indices to hide
+  const indices = Array.from({ length: total }, (_, i) => i);
+  for (let i = total - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1)); [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+  for (let k = 0; k < hideCount; k++) fc[indices[k]] = ' ';
+  return fc;
+}
+
+async function generateBlinkGIF() {
+  if (!isRendered) return;
+  const n = +document.getElementById('blink-frames').value;
+  const d = +document.getElementById('blink-delay').value;
+  const density = +document.getElementById('blink-density').value;
+  const mode = colorMode;
+  const { W, H } = gifCanvasSize();
+  const pal = buildPalette(mode);
+  const oc = document.createElement('canvas'), ox = oc.getContext('2d');
+  const orig = grid.map(c => c.char);
+  const frames = [];
+  for (let f = 0; f < n; f++) {
+    const fc = buildBlinkFrame(density);
+    fc.forEach((ch, i) => { grid[i].char = ch; });
+    frames.push(renderGridToIndexed(oc, ox, mode, +bwThreshold.value, pal));
+    setProgress((f+1)/n, `Frame ${f+1} / ${n}…`);
+    if (f % 4 === 0) await yieldUI();
+  }
+  grid.forEach((c, i) => { c.char = orig[i]; });
+  setProgress(1, 'Encoding…'); await yieldUI();
+  downloadGIF(encodeGIF(frames, W, H, pal, d), 'ascii-blink.gif');
+  hideProgress();
+}
+
+function startBlinkPreview() {
+  const cvs = document.getElementById('blink-preview');
+  if (!cvs || !isRendered) return;
+  let last = 0;
+  function tick(ts) {
+    const delay = +document.getElementById('blink-delay').value;
+    if (ts - last >= delay) {
+      last = ts;
+      const density = +document.getElementById('blink-density').value;
+      renderToPreviewCanvas(cvs, buildBlinkFrame(density));
+    }
+    blinkPreviewRaf = requestAnimationFrame(tick);
+  }
+  blinkPreviewRaf = requestAnimationFrame(tick);
+}
+
+// ── GIF: Zoom Pulse ───────────────────────────────────────────────────────
+async function generateZoompulseGIF() {
+  if (!isRendered) return;
+  const n = +document.getElementById('zoompulse-frames').value;
+  const d = +document.getElementById('zoompulse-delay').value;
+  const maxZoom = +document.getElementById('zoompulse-max').value / 100;
+  const { W, H } = gifCanvasSize();
+  const mode = colorMode;
+  const pal = buildPalette(mode);
+  const oc = document.createElement('canvas'), ox = oc.getContext('2d');
+  const frames = [];
+
+  // Render full-res art once
+  renderGridToIndexed(oc, ox, mode, +bwThreshold.value, pal);
+  const fullW = oc.width, fullH = oc.height;
+  const artCanvas = document.createElement('canvas');
+  artCanvas.width = fullW; artCanvas.height = fullH;
+  artCanvas.getContext('2d').drawImage(oc, 0, 0);
+
+  const outC = document.createElement('canvas');
+  outC.width = W; outC.height = H;
+  const outX = outC.getContext('2d');
+
+  for (let f = 0; f < n; f++) {
+    const t = f / (n - 1 || 1);
+    const scale = 1 + (maxZoom - 1) * Math.sin(t * Math.PI);
+    const srcW = fullW / scale, srcH = fullH / scale;
+    const srcX = (fullW - srcW) / 2, srcY = (fullH - srcH) / 2;
+    outX.clearRect(0, 0, W, H);
+    outX.fillStyle = bgColor; outX.fillRect(0, 0, W, H);
+    outX.drawImage(artCanvas, srcX, srcY, srcW, srcH, 0, 0, W, H);
+    const imgd = outX.getImageData(0, 0, W, H).data;
+    const idx = new Uint8Array(W * H);
+    for (let i = 0; i < W * H; i++) idx[i] = pxToIdx(imgd[i*4], imgd[i*4+1], imgd[i*4+2], mode, pal);
+    frames.push(idx);
+    setProgress((f+1)/n, `Frame ${f+1} / ${n}…`);
+    if (f % 4 === 0) await yieldUI();
+  }
+  setProgress(1, 'Encoding…'); await yieldUI();
+  downloadGIF(encodeGIF(frames, W, H, pal, d), 'ascii-zoom.gif');
+  hideProgress();
+}
+
+function startZoompulsePreview() {
+  const cvs = document.getElementById('zoom-preview');
+  if (!cvs || !isRendered) return;
+  // Render current art to an offscreen canvas
+  const fs = 5, cw = fs * 0.6 + 0.5, lh = fs * 1.15;
+  const artW = Math.ceil(cols * cw), artH = Math.ceil(rows * lh);
+  const artC = document.createElement('canvas');
+  artC.width = artW; artC.height = artH;
+  renderToPreviewCanvas(artC, null);
+
+  let phase = 0, last = 0;
+  function tick(ts) {
+    const delay = +document.getElementById('zoompulse-delay').value;
+    if (ts - last >= delay) {
+      last = ts;
+      const maxZ = +document.getElementById('zoompulse-max').value / 100;
+      const scale = 1 + (maxZ - 1) * Math.sin(phase * Math.PI);
+      phase = (phase + 1 / +document.getElementById('zoompulse-frames').value) % 1;
+      if (cvs.width !== artW || cvs.height !== artH) { cvs.width = artW; cvs.height = artH; cvs.style.aspectRatio = `${artW} / ${artH}`; }
+      const pctx = cvs.getContext('2d');
+      const srcW = artW / scale, srcH = artH / scale;
+      const srcX = (artW - srcW) / 2, srcY = (artH - srcH) / 2;
+      pctx.fillStyle = bgColor; pctx.fillRect(0, 0, artW, artH);
+      pctx.drawImage(artC, srcX, srcY, srcW, srcH, 0, 0, artW, artH);
+    }
+    zoompulsePreviewRaf = requestAnimationFrame(tick);
+  }
+  zoompulsePreviewRaf = requestAnimationFrame(tick);
+}
+
+// ── GIF: Invert ───────────────────────────────────────────────────────────
+async function generateInvertGIF() {
+  if (!isRendered) return;
+  const n = +document.getElementById('invert-frames').value;
+  const d = +document.getElementById('invert-delay').value;
+  const mode = colorMode;
+  const { W, H } = gifCanvasSize();
+  const pal = buildPalette('color');
+  const oc = document.createElement('canvas'), ox = oc.getContext('2d');
+  const orig = grid.map(c => ({ r: c.r, g: c.g, b: c.b }));
+  const origBg = bgColor;
+  const bgRgb = hexToRgb(bgColor);
+  const invBg = { r: 255 - bgRgb.r, g: 255 - bgRgb.g, b: 255 - bgRgb.b };
+  const frames = [];
+  const { padX, padY } = gifCanvasSize();
+  const { fs, cw, ch } = gifCharSize();
+
+  for (let f = 0; f < n; f++) {
+    const t = Math.sin((f / (n - 1 || 1)) * Math.PI) ** 2;
+    // Lerp bg
+    const br = Math.round(bgRgb.r + (invBg.r - bgRgb.r) * t);
+    const bg2 = Math.round(bgRgb.g + (invBg.g - bgRgb.g) * t);
+    const bb = Math.round(bgRgb.b + (invBg.b - bgRgb.b) * t);
+    bgColor = `rgb(${br},${bg2},${bb})`;
+    // Lerp cell colors
+    for (let i = 0; i < grid.length; i++) {
+      const o = orig[i];
+      grid[i].r = Math.round(o.r + (255 - 2 * o.r) * t);
+      grid[i].g = Math.round(o.g + (255 - 2 * o.g) * t);
+      grid[i].b = Math.round(o.b + (255 - 2 * o.b) * t);
+    }
+    oc.width = W; oc.height = H;
+    ox.fillStyle = bgColor; ox.fillRect(0, 0, W, H);
+    ox.font = `${fs}px "Courier New",monospace`; ox.textBaseline = 'top';
+    for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
+      const cell = grid[y * cols + x]; if (!cell.char || cell.char === ' ') continue;
+      ox.fillStyle = `rgb(${cell.r},${cell.g},${cell.b})`;
+      ox.fillText(cell.char, padX + x * cw, padY + y * ch);
+    }
+    const imgd = ox.getImageData(0, 0, W, H).data;
+    const idx = new Uint8Array(W * H);
+    for (let i = 0; i < W * H; i++) idx[i] = pxToIdx(imgd[i*4], imgd[i*4+1], imgd[i*4+2], 'color', pal);
+    frames.push(idx);
+    setProgress((f+1)/n, `Frame ${f+1} / ${n}…`);
+    if (f % 4 === 0) await yieldUI();
+  }
+  // Restore
+  bgColor = origBg;
+  for (let i = 0; i < grid.length; i++) { grid[i].r = orig[i].r; grid[i].g = orig[i].g; grid[i].b = orig[i].b; }
+  setProgress(1, 'Encoding…'); await yieldUI();
+  downloadGIF(encodeGIF(frames, W, H, pal, d), 'ascii-invert.gif');
+  hideProgress();
+}
+
+function startInvertPreview() {
+  const cvs = document.getElementById('invert-preview');
+  if (!cvs || !isRendered) return;
+  let phase = 0, last = 0;
+  const orig = grid.map(c => ({ r: c.r, g: c.g, b: c.b }));
+  const origBg = bgColor;
+  const bgRgb = hexToRgb(bgColor);
+  const invBg = { r: 255 - bgRgb.r, g: 255 - bgRgb.g, b: 255 - bgRgb.b };
+  const n = () => +document.getElementById('invert-frames').value;
+
+  function tick(ts) {
+    const delay = +document.getElementById('invert-delay').value;
+    if (ts - last >= delay) {
+      last = ts;
+      const total = n();
+      const t = Math.sin((phase / total) * Math.PI) ** 2;
+      phase = (phase + 1) % total;
+      // Lerp bg
+      const br = Math.round(bgRgb.r + (invBg.r - bgRgb.r) * t);
+      const bg2 = Math.round(bgRgb.g + (invBg.g - bgRgb.g) * t);
+      const bb2 = Math.round(bgRgb.b + (invBg.b - bgRgb.b) * t);
+      const frameBg = `rgb(${br},${bg2},${bb2})`;
+
+      const fs2 = 5, cw2 = fs2 * 0.6 + 0.5, lh2 = fs2 * 1.15;
+      const W2 = Math.ceil(cols * cw2), H2 = Math.ceil(rows * lh2);
+      if (cvs.width !== W2 || cvs.height !== H2) { cvs.width = W2; cvs.height = H2; cvs.style.aspectRatio = `${W2} / ${H2}`; }
+      const pctx = cvs.getContext('2d');
+      pctx.fillStyle = frameBg; pctx.fillRect(0, 0, W2, H2);
+      pctx.font = `${fs2}px "Courier New",monospace`; pctx.textBaseline = 'top';
+      for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
+        const cell = grid[y * cols + x];
+        const o = orig[y * cols + x];
+        if (!cell.char || cell.char === ' ') continue;
+        const r = Math.round(o.r + (255 - 2 * o.r) * t);
+        const g = Math.round(o.g + (255 - 2 * o.g) * t);
+        const b = Math.round(o.b + (255 - 2 * o.b) * t);
+        pctx.fillStyle = `rgb(${r},${g},${b})`;
+        pctx.fillText(cell.char, x * cw2, y * lh2);
+      }
+    }
+    invertPreviewRaf = requestAnimationFrame(tick);
+  }
+  invertPreviewRaf = requestAnimationFrame(tick);
+}
+
 function stopGifPreviews() {
-  [thPreviewRaf, scPreviewRaf, fadePreviewRaf, cyclePreviewRaf, wavePreviewRaf, revealGifRaf, plainGifRaf].forEach(r => r && cancelAnimationFrame(r));
+  [thPreviewRaf, scPreviewRaf, fadePreviewRaf, cyclePreviewRaf, wavePreviewRaf, revealGifRaf, plainGifRaf,
+   glitchPreviewRaf, matrixPreviewRaf, dissolvePreviewRaf, shakePreviewRaf, blinkPreviewRaf, zoompulsePreviewRaf, invertPreviewRaf
+  ].forEach(r => r && cancelAnimationFrame(r));
   thPreviewRaf = scPreviewRaf = fadePreviewRaf = cyclePreviewRaf = wavePreviewRaf = revealGifRaf = plainGifRaf = null;
+  glitchPreviewRaf = matrixPreviewRaf = dissolvePreviewRaf = shakePreviewRaf = blinkPreviewRaf = zoompulsePreviewRaf = invertPreviewRaf = null;
 }
 
 // ── GIF: No Effect (recording) ────────────────────────────────────────────
@@ -2657,6 +3825,7 @@ function saveState() {
     bwThr:   bwThreshold.value,
     invert:  invertBrightness ? '1' : '0',
     dt:      duotoneAccent.slice(1),
+    rmode:   renderMode,
   });
   history.replaceState(null, '', '#' + p.toString());
 }
@@ -2702,6 +3871,13 @@ function loadState() {
       duotoneAccent = '#' + p.get('dt');
       dtInput.value = duotoneAccent;
       dtSwatch.style.background = duotoneAccent;
+    }
+    if (p.has('rmode')) {
+      renderMode = p.get('rmode');
+      document.querySelectorAll('#rmode-group [data-rmode]').forEach(b => {
+        b.classList.toggle('active', b.dataset.rmode === renderMode);
+      });
+      updateCharsetOverlay();
     }
   } catch(e) {}
 }
@@ -2832,5 +4008,6 @@ document.addEventListener('keydown', e => {
   }
 });
 </script>
+
 </body>
 </html>
